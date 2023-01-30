@@ -208,10 +208,10 @@ proto-image-push:
 	docker push $(protoImageName)
 
 proto-lint:
-	@$(DOCKER_BUF) lint --error-format=json
+	@$(DOCKER_BUF) lint --config proto/buf.yaml --error-format=json
 
 proto-check-breaking:
-	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=master
+	@$(DOCKER_BUF) breaking --config proto/buf.yaml --against $(HTTPS_GIT)#branch=master
 
 
 ###############################################################################

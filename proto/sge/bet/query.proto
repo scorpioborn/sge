@@ -30,23 +30,23 @@ service Query {
   // Queries list of Bet items of a certain creator sorted by timestamp.
   rpc BetsByCreator(QueryBetsByCreatorRequest)
       returns (QueryBetsByCreatorResponse) {
-    option (google.api.http).get = "/sge/bets_by_creator/{creator}";
+    option (google.api.http).get = "/sge/bets-by-creator/{creator}";
   }
 
   // Queries a list of Bet items filtered by uid list.
   rpc BetsByUIDs(QueryBetsByUIDsRequest) returns (QueryBetsByUIDsResponse) {
-    option (google.api.http).get = "/sge/bets_by_uids";
+    option (google.api.http).get = "/sge/bets-by-uids";
   }
 
   // Queries list of Active Bet items.
   rpc ActiveBets(QueryActiveBetsRequest) returns (QueryActiveBetsResponse) {
-    option (google.api.http).get = "/sge/active_bets/{sport_event_uid}";
+    option (google.api.http).get = "/sge/active-bets/{sport_event_uid}";
   }
 
   // Queries list of Settled Bet items.
   rpc SettledBetsOfHeight(QuerySettledBetsOfHeightRequest)
       returns (QuerySettledBetsOfHeightResponse) {
-    option (google.api.http).get = "/sge/settled_bets_of_height/{block_height}";
+    option (google.api.http).get = "/sge/settled-bets-of-height/{block_height}";
   }
 }
 

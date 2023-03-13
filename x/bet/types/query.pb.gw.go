@@ -773,13 +773,13 @@ var (
 
 	pattern_Query_Bets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"sge", "bets"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_BetsByCreator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sge", "bets_by_creator", "creator"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_BetsByCreator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sge", "bets-by-creator", "creator"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_BetsByUIDs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"sge", "bets_by_uids"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_BetsByUIDs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"sge", "bets-by-uids"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ActiveBets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sge", "active_bets", "sport_event_uid"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ActiveBets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sge", "active-bets", "sport_event_uid"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SettledBetsOfHeight_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sge", "settled_bets_of_height", "block_height"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_SettledBetsOfHeight_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sge", "settled-bets-of-height", "block_height"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

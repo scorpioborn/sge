@@ -19,19 +19,19 @@ service Query {
 
   // Deposits queries all deposits.
   rpc Deposits(QueryDepositsRequest) returns (QueryDepositsResponse) {
-    option (google.api.http).get = "/sge/deposits";
+    option (google.api.http).get = "/sge/house/deposits";
   }
 
   // DepositorDeposits queries deposits info for given depositor.
   rpc DepositorDeposits(QueryDepositorDepositsRequest)
       returns (QueryDepositorDepositsResponse) {
-    option (google.api.http).get = "/sge/deposits/{depositor_address}";
+    option (google.api.http).get = "/sge/house/deposits/{depositor_address}";
   }
 
   // DepositorWithdrawals queries withdrawals info for given depositor.
   rpc DepositorWithdrawals(QueryDepositorWithdrawalsRequest)
       returns (QueryDepositorWithdrawalsResponse) {
-    option (google.api.http).get = "/sge/withdrawals/{depositor_address}";
+    option (google.api.http).get = "/sge/house/withdrawals/{depositor_address}";
   }
 }
 

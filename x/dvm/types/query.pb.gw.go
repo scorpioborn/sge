@@ -560,15 +560,15 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sge", "dvm", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PubKeys_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sge", "dvm", "pub_keys"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PubKeys_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sge", "dvm", "pub-keys"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ActivePublicKeysChangeProposal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"sge", "dvm", "active_pubkeys_proposal", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ActivePublicKeysChangeProposal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"sge", "dvm", "active-pubkeys-proposal", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ActivePublicKeysChangeProposals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sge", "dvm", "active_pubkeys_proposals"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ActivePublicKeysChangeProposals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sge", "dvm", "active-pubkeys-proposals"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_FinishedPublicKeysChangeProposal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"sge", "dvm", "finished_pubkeys_proposal", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_FinishedPublicKeysChangeProposal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"sge", "dvm", "finished-pubkeys-proposal", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_FinishedPublicKeysChangeProposals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sge", "dvm", "finished_pubkeys_proposals"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_FinishedPublicKeysChangeProposals_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sge", "dvm", "finished-pubkeys-proposals"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

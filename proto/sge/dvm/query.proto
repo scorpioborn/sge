@@ -17,30 +17,30 @@ service Query {
   }
   // Queries a list of PubKeys items.
   rpc PubKeys(QueryPubKeysRequest) returns (QueryPubKeysResponse) {
-    option (google.api.http).get = "/sge/dvm/pub_keys";
+    option (google.api.http).get = "/sge/dvm/pub-keys";
   }
   // Queries an active proposal by id.
   rpc ActivePublicKeysChangeProposal(QueryActivePublicKeysChangeProposalRequest)
       returns (QueryActivePublicKeysChangeProposalResponse) {
-    option (google.api.http).get = "/sge/dvm/active_pubkeys_proposal/{id}";
+    option (google.api.http).get = "/sge/dvm/active-pubkeys-proposal/{id}";
   }
   // Queries a list of active proposal items.
   rpc ActivePublicKeysChangeProposals(
       QueryActivePublicKeysChangeProposalsRequest)
       returns (QueryActivePublicKeysChangeProposalsResponse) {
-    option (google.api.http).get = "/sge/dvm/active_pubkeys_proposals";
+    option (google.api.http).get = "/sge/dvm/active-pubkeys-proposals";
   }
   // Queries a finished proposal by id.
   rpc FinishedPublicKeysChangeProposal(
       QueryFinishedPublicKeysChangeProposalRequest)
       returns (QueryFinishedPublicKeysChangeProposalResponse) {
-    option (google.api.http).get = "/sge/dvm/finished_pubkeys_proposal/{id}";
+    option (google.api.http).get = "/sge/dvm/finished-pubkeys-proposal/{id}";
   }
   // Queries a list of finished proposal items.
   rpc FinishedPublicKeysChangeProposals(
       QueryFinishedPublicKeysChangeProposalsRequest)
       returns (QueryFinishedPublicKeysChangeProposalsResponse) {
-    option (google.api.http).get = "/sge/dvm/finished_pubkeys_proposals";
+    option (google.api.http).get = "/sge/dvm/finished-pubkeys-proposals";
   }
 }
 

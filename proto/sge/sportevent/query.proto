@@ -22,7 +22,7 @@ service Query {
 
   // Queries a list of SportEvent items.
   rpc SportEvents(QuerySportEventsRequest) returns (QuerySportEventsResponse) {
-    option (google.api.http).get = "/sge/sport-event/sport_events";
+    option (google.api.http).get = "/sge/sport-event/sport-events";
   }
 
   // Queries a list of SportEventsByUIDs items.

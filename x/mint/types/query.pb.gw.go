@@ -395,9 +395,9 @@ var (
 
 	pattern_Query_PhaseStep_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"cosmos", "mint", "v1beta1", "phasestep"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_PhaseProvisions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"cosmos", "mint", "v1beta1", "phase_provisions"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_PhaseProvisions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"cosmos", "mint", "v1beta1", "phase-provisions"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_EndPhaseStatus_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"cosmos", "mint", "v1beta1", "endphase_status"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_EndPhaseStatus_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"cosmos", "mint", "v1beta1", "endphase-status"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

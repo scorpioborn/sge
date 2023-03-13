@@ -27,13 +27,13 @@ service Query {
   // PhaseProvisions current minting phase provisions value.
   rpc PhaseProvisions(QueryPhaseProvisionsRequest)
       returns (QueryPhaseProvisionsResponse) {
-    option (google.api.http).get = "/cosmos/mint/v1beta1/phase_provisions";
+    option (google.api.http).get = "/cosmos/mint/v1beta1/phase-provisions";
   }
 
   // EndPhaseStatus returns the current minting phase status.
   rpc EndPhaseStatus(QueryEndPhaseStatusRequest)
       returns (QueryEndPhaseStatusResponse) {
-    option (google.api.http).get = "/cosmos/mint/v1beta1/endphase_status";
+    option (google.api.http).get = "/cosmos/mint/v1beta1/endphase-status";
   }
 }
 

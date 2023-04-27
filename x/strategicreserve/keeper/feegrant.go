@@ -57,6 +57,33 @@ func (k Keeper) GetFeeGrants(ctx sdk.Context) (list []types.FeeGrant, err error)
 	return
 }
 
+func (k Keeper) InvokeFeeGrant(ctx sdk.Context, creator, grantee string) (types.FeeGrant, error) {
+	_, found := k.GetFeeGrant(ctx, grantee)
+	if found {
+		return types.FeeGrant{}, types.ErrFeeGrantExists
+	}
+
+	granteeAcc, err := sdk.AccAddressFromBech32(grantee)
+	if err != nil {
+		return types.FeeGrant{}, err
+	}
+
+	err = k.SetSrPoolSdkFeeGrant(ctx, creator, granteeAcc)
+	if err != nil {
+		return types.FeeGrant{}, sdkerrors.Wrapf(types.ErrInSrPoolFeeGrant, "%s", err)
+	}
+
+	feeGrant := types.NewFeeGrant(
+		creator,
+		grantee,
+		ctx.BlockTime().Unix(),
+	)
+
+	k.SetFeeGrant(ctx, feeGrant)
+
+	return feeGrant, nil
+}
+
 func (k Keeper) SetSrPoolSdkFeeGrant(ctx sdk.Context, creator string, grantee sdk.AccAddress) error {
 	granter := k.accountKeeper.GetModuleAddress(types.SRPoolName)
 

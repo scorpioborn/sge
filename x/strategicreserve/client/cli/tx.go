@@ -23,6 +23,7 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		CmdInvokeFeeGrant(),
+		CmdRevokeFeeGrant(),
 	)
 
 	return cmd

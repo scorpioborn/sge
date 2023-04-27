@@ -11,6 +11,9 @@ const (
 	// StoreKey is the string store representation
 	StoreKey = ModuleName
 
+	// RouterKey is the message route for slashing
+	RouterKey = ModuleName
+
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
 )
@@ -40,6 +43,7 @@ var (
 	HistoricalParticipationExposureKeyPrefix = []byte{0x06} // prefix for keys that store historical participation exposures
 	OrderBookStatsKeyPrefix                  = []byte{0x07} // prefix for keys that store book stats
 	ParticipationBetPairKeyPrefix            = []byte{0x08} // prefix for keys that store book participation and bet pairs
+	FeeGrantPrefix                           = []byte{0x09} // prefix for keys that store fee grants
 )
 
 // GetOrderBookKey returns the bytes of an book key

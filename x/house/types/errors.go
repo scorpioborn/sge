@@ -20,6 +20,6 @@ var (
 	ErrDepositNotFound           = sdkerrors.Register(ModuleName, 5010, "deposit not found")
 	ErrOBLiquidateProcessing     = sdkerrors.Register(ModuleName, 5011, "internal error in processing liquidation in orderbook")
 	ErrUserKycFailed             = sdkerrors.Register(ModuleName, 5012, "the account failed the KYC Validation")
-	ErrAuthorizationNotFound     = sdkerrors.Register(ModuleName, 5013, "no authorization found")
+	ErrAuthorizationNotFound     = sdkerrors.Register(ModuleName, 5013, "authorization for the grantee not found or expired")
 	ErrAuthorizationNotAccepted  = sdkerrors.Register(ModuleName, 5014, "authorization not accepted")
 )

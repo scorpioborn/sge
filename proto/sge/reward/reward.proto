@@ -18,6 +18,7 @@ message RewardCommon {
     (gogoproto.jsontag) = "ts",
     json_name = "ts"
   ];
+  string meta = 4;
 }
 
 // Definition is the type for reward declaration for a campaign.

@@ -12,7 +12,7 @@ import (
 
 func CmdGrantReward() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "apply [uid] [campaign uid] [ticket]",
+		Use:   "grant [uid] [campaign uid] [ticket]",
 		Short: "Apply a new reward",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {

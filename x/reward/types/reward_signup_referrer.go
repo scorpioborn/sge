@@ -45,7 +45,7 @@ func (sur SignUpReferrerReward) Calculate(goCtx context.Context, ctx sdk.Context
 	}
 
 	if !keepers.RewardKeeper.HasRewardByReceiver(ctx, payload.Referee, RewardCategory_REWARD_CATEGORY_SIGNUP) {
-		return RewardFactoryData{}, sdkerrors.Wrap(sdkerrtypes.ErrInvalidRequest, "referee account has signed up yet, there is no referee claim record")
+		return RewardFactoryData{}, sdkerrors.Wrap(sdkerrtypes.ErrInvalidRequest, "referee account has no signed up yet, there is no referee claim record")
 	}
 
 	if keepers.SubAccountKeeper.IsSubAccount(ctx, receiverAddr) {

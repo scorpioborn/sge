@@ -2,7 +2,8 @@ package keeper
 
 import (
 	sdkerrors "cosmossdk.io/errors"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
+	"cosmossdk.io/store/prefix"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/utils"
@@ -36,7 +37,7 @@ func (k Keeper) GetBet(ctx sdk.Context, creator string, id uint64) (val types.Be
 // GetBets returns list of bets
 func (k Keeper) GetBets(ctx sdk.Context) (list []types.Bet, err error) {
 	store := k.getBetStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()
@@ -74,7 +75,7 @@ func (k Keeper) GetBetID(ctx sdk.Context, uid string) (val types.UID2ID, found b
 // GetBetIDs returns list of uid2id
 func (k Keeper) GetBetIDs(ctx sdk.Context) (list []types.UID2ID, err error) {
 	store := k.getBetIDStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()
@@ -106,7 +107,7 @@ func (k Keeper) IsAnyPendingBetForMarket(ctx sdk.Context, marketUID string) (the
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PendingBetListOfMarketPrefix(marketUID))
 
 	// create iterator for all existing records
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 	defer func() {
 		err = iterator.Close()
 	}()
@@ -120,7 +121,7 @@ func (k Keeper) IsAnyPendingBetForMarket(ctx sdk.Context, marketUID string) (the
 // GetPendingBets returns list of the pending bets
 func (k Keeper) GetPendingBets(ctx sdk.Context) (list []types.PendingBet, err error) {
 	store := k.getPendingBetStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()
@@ -156,7 +157,7 @@ func (k Keeper) SetSettledBet(
 // GetSettledBets returns list of the pending bets
 func (k Keeper) GetSettledBets(ctx sdk.Context) (list []types.SettledBet, err error) {
 	store := k.getSettledBetStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

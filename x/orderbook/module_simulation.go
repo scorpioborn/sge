@@ -6,7 +6,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -42,7 +41,7 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
 	sdr[types.StoreKey] = orderbooksimulation.NewDecodeStore(am.cdc)
 }
 
@@ -51,7 +50,7 @@ func (AppModule) WeightedOperations(simState module.SimulationState) []simtypes.
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgAdd int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAdd, &weightMsgAdd, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgAdd, &weightMsgAdd, nil,
 		func(_ *rand.Rand) {
 			weightMsgAdd = defaultWeightMsgAdd
 		},

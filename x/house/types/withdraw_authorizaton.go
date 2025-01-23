@@ -1,6 +1,8 @@
 package types
 
 import (
+	context "context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrtypes "github.com/cosmos/cosmos-sdk/types/errors"
@@ -22,7 +24,7 @@ func (WithdrawAuthorization) MsgTypeURL() string {
 }
 
 // Accept implements Authorization.Accept.
-func (a WithdrawAuthorization) Accept(_ sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
+func (a WithdrawAuthorization) Accept(_ context.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	mWithdraw, ok := msg.(*MsgWithdraw)
 	if !ok {
 		return authz.AcceptResponse{}, sdkerrtypes.ErrInvalidType.Wrap("type mismatch")

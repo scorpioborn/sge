@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/utils"
@@ -36,7 +37,7 @@ func (k Keeper) MarketExists(ctx sdk.Context, marketUID string) bool {
 // GetMarkets returns all markets
 func (k Keeper) GetMarkets(ctx sdk.Context) (list []types.Market, err error) {
 	store := k.getMarketsStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

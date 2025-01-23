@@ -8,13 +8,13 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/log"
 	sdkmath "cosmossdk.io/math"
-	tmdb "github.com/cometbft/cometbft-db"
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/crypto/secp256k1"
-	"github.com/cometbft/cometbft/libs/log"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	tmtypes "github.com/cometbft/cometbft/types"
+	dbm "github.com/cosmos/cosmos-db"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -47,7 +47,7 @@ type Options struct {
 
 // setup initializes new test app instance
 func setup(withGenesis bool, invCheckPeriod uint) (*TestApp, app.GenesisState) {
-	db := tmdb.NewMemDB()
+	db := dbm.NewMemDB()
 	encCdc := app.MakeEncodingConfig()
 	appInstance := app.NewSgeApp(
 		log.NewNopLogger(),
@@ -120,7 +120,7 @@ func SetupWithGenesisAccounts(
 	}
 
 	appInstance.InitChain(
-		abci.RequestInitChain{
+		&abci.RequestInitChain{
 			Validators:      validatorUpdates,
 			ConsensusParams: DefaultConsensusParams,
 			AppStateBytes:   stateBytes,

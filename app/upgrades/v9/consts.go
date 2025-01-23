@@ -1,11 +1,11 @@
 package v9
 
 import (
-	store "github.com/cosmos/cosmos-sdk/store/types"
+	store "cosmossdk.io/store/types"
 	consensustypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 
-	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"

@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/sge-network/sge/x/reward/types"
 )
 
@@ -31,7 +33,7 @@ func (k Keeper) GetPromoter(
 // GetAllPromoter returns all promoters
 func (k Keeper) GetAllPromoter(ctx sdk.Context) (list []types.Promoter) {
 	store := k.getPromoterStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

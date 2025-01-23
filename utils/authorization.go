@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"time"
 
 	sdkerrors "cosmossdk.io/errors"
@@ -13,19 +14,19 @@ import (
 // AuthzKeeper defines the expected authz keeper.
 type AuthzKeeper interface {
 	GetAuthorization(
-		ctx sdk.Context,
+		ctx context.Context,
 		grantee sdk.AccAddress,
 		granter sdk.AccAddress,
 		msgType string,
 	) (authz.Authorization, *time.Time)
 	SaveGrant(
-		ctx sdk.Context,
+		ctx context.Context,
 		grantee, granter sdk.AccAddress,
 		authorization authz.Authorization,
 		expiration *time.Time,
 	) error
 	DeleteGrant(
-		ctx sdk.Context,
+		ctx context.Context,
 		grantee, granter sdk.AccAddress,
 		msgType string,
 	) error
@@ -33,7 +34,7 @@ type AuthzKeeper interface {
 
 func ValidateMsgAuthorization(
 	authzKeeper AuthzKeeper,
-	ctx sdk.Context,
+	ctx context.Context,
 	creator, depositor string,
 	msg sdk.Msg,
 	errAuthorizationNotFound, errAuthorizationNotAccepted error,

@@ -3,6 +3,7 @@ package keeper
 import (
 	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cast"
 
@@ -64,7 +65,7 @@ func (k Keeper) IsSubaccount(ctx sdk.Context, subAccAddr sdk.AccAddress) bool {
 
 func (k Keeper) IterateSubaccounts(ctx sdk.Context, cb func(subAccountAddress, subaccountOwner sdk.AccAddress) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.SubaccountOwnerReversePrefix)
+	iterator := storetypes.KVStorePrefixIterator(store, types.SubaccountOwnerReversePrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

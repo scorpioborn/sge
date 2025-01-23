@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/x/reward/types"
@@ -41,7 +42,7 @@ func (k Keeper) RemoveCampaign(
 // GetAllCampaign returns all campaign
 func (k Keeper) GetAllCampaign(ctx sdk.Context) (list []types.Campaign) {
 	store := k.getCampaignStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

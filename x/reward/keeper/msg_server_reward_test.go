@@ -710,7 +710,7 @@ func TestMsgApplyBetBonus(t *testing.T) {
 	betBonusCampClaims["reward_type"] = types.RewardType_REWARD_TYPE_BET_DISCOUNT
 	betBonusCampClaims["reward_amount_type"] = types.RewardAmountType_REWARD_AMOUNT_TYPE_PERCENTAGE
 	betBonusCampClaims["reward_amount"] = types.RewardAmount{
-		MainAccountPercentage: sdk.NewDecWithPrec(10, 2),
+		MainAccountPercentage: sdkmath.LegacyNewDecWithPrec(10, 2),
 		UnlockPeriod:          0,
 	}
 	betBonusCampClaims["constraints"] = types.CampaignConstraints{

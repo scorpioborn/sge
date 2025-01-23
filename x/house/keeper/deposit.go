@@ -3,6 +3,7 @@ package keeper
 import (
 	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrtypes "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -38,7 +39,7 @@ func (k Keeper) GetDeposit(ctx sdk.Context, depositorAddress,
 // GetAllDeposits returns list of deposits.
 func (k Keeper) GetAllDeposits(ctx sdk.Context) (list []types.Deposit, err error) {
 	store := k.getDepositStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

@@ -1,7 +1,7 @@
 package v10
 
 import (
-	store "github.com/cosmos/cosmos-sdk/store/types"
+	store "cosmossdk.io/store/types"
 
 	"github.com/sge-network/sge/app/upgrades"
 )

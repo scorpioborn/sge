@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrtypes "github.com/cosmos/cosmos-sdk/types/errors"
 
+	storetypes "cosmossdk.io/store/types"
 	"github.com/sge-network/sge/utils"
 	"github.com/sge-network/sge/x/bet/types"
 	markettypes "github.com/sge-network/sge/x/market/types"
@@ -178,7 +179,7 @@ func (k Keeper) batchMarketSettlement(
 ) (settledCount uint32, err error) {
 	// initialize iterator for the certain number of pending bets
 	// equal to countToBeSettled
-	iterator := sdk.KVStorePrefixIteratorPaginated(
+	iterator := storetypes.KVStorePrefixIteratorPaginated(
 		ctx.KVStore(k.storeKey),
 		types.PendingBetListOfMarketPrefix(marketUID),
 		singlePageNum,

@@ -1,6 +1,13 @@
 package app
 
 import (
+	"cosmossdk.io/x/evidence"
+	evidencetypes "cosmossdk.io/x/evidence/types"
+	"cosmossdk.io/x/feegrant"
+	feegrantmodule "cosmossdk.io/x/feegrant/module"
+	"cosmossdk.io/x/upgrade"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
+	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
@@ -11,17 +18,11 @@ import (
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/capability"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	"github.com/cosmos/cosmos-sdk/x/evidence"
-	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
-	"github.com/cosmos/cosmos-sdk/x/feegrant"
-	feegrantmodule "github.com/cosmos/cosmos-sdk/x/feegrant/module"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/gov"
@@ -29,30 +30,33 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/group"
 	groupmodule "github.com/cosmos/cosmos-sdk/x/group/module"
 	"github.com/cosmos/cosmos-sdk/x/params"
+	sdkparams "github.com/cosmos/cosmos-sdk/x/params"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	"github.com/cosmos/ibc-go/modules/capability"
+	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 
-	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v7/types"
+	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
 	ibcwasmmodule "github.com/cosmos/ibc-go/modules/light-clients/08-wasm"
 	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
-	ica "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts"
-	icatypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/types"
-	ibcfee "github.com/cosmos/ibc-go/v7/modules/apps/29-fee"
-	ibcfeetypes "github.com/cosmos/ibc-go/v7/modules/apps/29-fee/types"
-	"github.com/cosmos/ibc-go/v7/modules/apps/transfer"
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v7/modules/core"
-	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
-	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
+	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
+	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
+	ibcfee "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"
+	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
+	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
+	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v8/modules/core"
+	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 
 	wasm "github.com/CosmWasm/wasmd/x/wasm"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
+	icqtypes "github.com/cosmos/ibc-apps/modules/async-icq/v8/types"
+	"github.com/sge-network/sge/app/keepers"
 	sgeappparams "github.com/sge-network/sge/app/params"
 	betmodule "github.com/sge-network/sge/x/bet"
 	betmoduletypes "github.com/sge-network/sge/x/bet/types"
@@ -70,24 +74,28 @@ import (
 	rewardmoduletypes "github.com/sge-network/sge/x/reward/types"
 	subaccountmodule "github.com/sge-network/sge/x/subaccount"
 	subaccounttypes "github.com/sge-network/sge/x/subaccount/types"
-
 	// unnamed import of statik for swagger UI support
-	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
+	// TODO: Check if needed
+	// _ "github.com/cosmos/cosmos-sdk/client/docs/statik"
 )
 
 // module account permissions
-var mAccPerms = map[string][]string{
-	authtypes.FeeCollectorName:     nil,
-	distrtypes.ModuleName:          nil,
-	mintmoduletypes.ModuleName:     {authtypes.Minter},
-	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
-	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
-	govtypes.ModuleName:            {authtypes.Burner},
+var moduleAccountPermissions = map[string][]string{
+	authtypes.FeeCollectorName: nil,
+	distrtypes.ModuleName:      nil,
+	ibchookstypes.ModuleName:   nil,
 
-	// ibc
+	mintmoduletypes.ModuleName:                     {authtypes.Minter, authtypes.Burner},
+	mintmoduletypes.DeveloperVestingModuleAcctName: nil,
+	stakingtypes.BondedPoolName:                    {authtypes.Burner, authtypes.Staking},
+	stakingtypes.NotBondedPoolName:                 {authtypes.Burner, authtypes.Staking},
+	govtypes.ModuleName:                            {authtypes.Burner},
+
+	// // ibc
 	ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
 	ibcfeetypes.ModuleName:      nil,
 	icatypes.ModuleName:         nil,
+	icqtypes.ModuleName:         nil,
 
 	// cosmwasm
 	wasmtypes.ModuleName: {authtypes.Burner},
@@ -150,11 +158,11 @@ func appModules(
 		genutil.NewAppModule(
 			app.AccountKeeper,
 			app.StakingKeeper,
-			app.BaseApp.DeliverTx,
+			app.BaseApp,
 			encodingConfig.TxConfig,
 		),
-		auth.NewAppModule(appCodec, app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
-		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
+		auth.NewAppModule(appCodec, *app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
+		vesting.NewAppModule(*app.AccountKeeper, app.BankKeeper),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
@@ -170,38 +178,38 @@ func appModules(
 		),
 		distr.NewAppModule(
 			appCodec,
-			app.DistrKeeper,
+			*app.DistrKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.StakingKeeper,
 			app.GetSubspace(distrtypes.ModuleName),
 		),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
-		upgrade.NewAppModule(app.UpgradeKeeper),
-		evidence.NewAppModule(app.EvidenceKeeper),
+		upgrade.NewAppModule(app.UpgradeKeeper, addresscodec.NewBech32Codec(keepers.AccountAddressPrefix)),
+		evidence.NewAppModule(*app.EvidenceKeeper),
 		feegrantmodule.NewAppModule(
 			appCodec,
 			app.AccountKeeper,
 			app.BankKeeper,
-			app.FeeGrantKeeper,
+			*app.FeeGrantKeeper,
 			app.interfaceRegistry,
 		),
 		authzmodule.NewAppModule(
 			appCodec,
-			app.AuthzKeeper,
+			*app.AuthzKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.interfaceRegistry,
 		),
 		groupmodule.NewAppModule(appCodec,
-			app.GroupKeeper,
+			*app.GroupKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.interfaceRegistry,
 		),
 		wasm.NewAppModule(
 			appCodec,
-			&app.AppKeepers.WasmKeeper,
+			app.AppKeepers.WasmKeeper,
 			app.AppKeepers.StakingKeeper,
 			app.AppKeepers.AccountKeeper,
 			app.AppKeepers.BankKeeper,
@@ -209,7 +217,7 @@ func appModules(
 			app.GetSubspace(wasmtypes.ModuleName),
 		),
 		app.IBCModule,
-		params.NewAppModule(app.ParamsKeeper),
+		sdkparams.NewAppModule(*app.ParamsKeeper),
 		app.TransferModule,
 		app.IBCFeeModule,
 		app.ICAModule,
@@ -235,22 +243,22 @@ func simulationModules(
 	appCodec := encodingConfig.Marshaler
 
 	return []module.AppModuleSimulation{
-		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
+		auth.NewAppModule(appCodec, *app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
 		feegrantmodule.NewAppModule(
 			appCodec,
 			app.AccountKeeper,
 			app.BankKeeper,
-			app.FeeGrantKeeper,
+			*app.FeeGrantKeeper,
 			app.interfaceRegistry,
 		),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		mintmodule.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil),
+		mintmodule.NewAppModule(appCodec, *app.MintKeeper, app.AccountKeeper, nil),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		distr.NewAppModule(
 			appCodec,
-			app.DistrKeeper,
+			*app.DistrKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.StakingKeeper,
@@ -258,28 +266,29 @@ func simulationModules(
 		),
 		slashing.NewAppModule(
 			appCodec,
-			app.SlashingKeeper,
+			*app.SlashingKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.StakingKeeper,
 			app.GetSubspace(stakingtypes.ModuleName),
+			app.interfaceRegistry,
 		),
-		params.NewAppModule(app.ParamsKeeper),
-		evidence.NewAppModule(app.EvidenceKeeper),
+		params.NewAppModule(*app.ParamsKeeper),
+		evidence.NewAppModule(*app.EvidenceKeeper),
 		authzmodule.NewAppModule(
 			appCodec,
-			app.AuthzKeeper,
+			*app.AuthzKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.interfaceRegistry,
 		),
 		groupmodule.NewAppModule(appCodec,
-			app.GroupKeeper,
+			*app.GroupKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
 			app.interfaceRegistry,
 		),
-		wasm.NewAppModule(appCodec, &app.AppKeepers.WasmKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
+		wasm.NewAppModule(appCodec, app.AppKeepers.WasmKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		app.IBCModule,
 		app.TransferModule,
 

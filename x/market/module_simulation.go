@@ -6,7 +6,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -50,7 +49,7 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
+func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
 	sdr[types.StoreKey] = marketsimulation.NewDecodeStore(am.cdc)
 }
 
@@ -59,7 +58,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgAdd int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAdd, &weightMsgAdd, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgAdd, &weightMsgAdd, nil,
 		func(_ *rand.Rand) {
 			weightMsgAdd = defaultWeightMsgAdd
 		},
@@ -71,7 +70,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 
 	var weightMsgResolve int
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc,
 		opWeightMsgResolve,
 		&weightMsgResolve,
 		nil,
@@ -85,7 +83,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdate int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdate, &weightMsgUpdate, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdate, &weightMsgUpdate, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdate = defaultWeightMsgUpdate
 		},

@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/x/ovm/types"
@@ -38,7 +39,7 @@ func (k Keeper) GetAllPubkeysChangeProposalsByStatus(
 	status types.ProposalStatus,
 ) (list []types.PublicKeysChangeProposal, err error) {
 	store := k.getPubKeysChangeProposalStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.PubkeysChangeProposalPrefix(status))
+	iterator := storetypes.KVStorePrefixIterator(store, types.PubkeysChangeProposalPrefix(status))
 
 	defer func() {
 		err = iterator.Close()
@@ -58,7 +59,7 @@ func (k Keeper) GetAllPubkeysChangeProposals(
 	ctx sdk.Context,
 ) (list []types.PublicKeysChangeProposal, err error) {
 	store := k.getPubKeysChangeProposalStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

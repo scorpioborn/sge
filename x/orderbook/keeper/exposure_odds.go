@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdkmath "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/x/orderbook/types"
@@ -39,7 +40,7 @@ func (k Keeper) GetOddsExposuresByOrderBook(
 	orderBookUID string,
 ) (list []types.OrderBookOddsExposure, err error) {
 	store := k.getOrderBookOddsExposureStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetOrderBookOddsExposuresKey(orderBookUID))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetOrderBookOddsExposuresKey(orderBookUID))
 
 	defer func() {
 		err = iterator.Close()
@@ -59,7 +60,7 @@ func (k Keeper) GetAllOrderBookExposures(
 	ctx sdk.Context,
 ) (list []types.OrderBookOddsExposure, err error) {
 	store := k.getOrderBookOddsExposureStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

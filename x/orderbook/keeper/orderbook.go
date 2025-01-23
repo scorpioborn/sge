@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdkerrors "cosmossdk.io/errors"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/x/orderbook/types"
@@ -33,7 +34,7 @@ func (k Keeper) GetOrderBook(ctx sdk.Context, orderBookUID string) (val types.Or
 // GetAllOrderBooks returns all order books used during genesis dump.
 func (k Keeper) GetAllOrderBooks(ctx sdk.Context) (list []types.OrderBook, err error) {
 	store := k.getOrderBookStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

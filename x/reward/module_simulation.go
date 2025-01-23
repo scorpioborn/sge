@@ -8,7 +8,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
@@ -73,14 +72,14 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 }
 
 // RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+func (am AppModule) RegisterStoreDecoder(_ simtypes.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
 	var weightMsgCreateCampaign int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateCampaign, &weightMsgCreateCampaign, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgCreateCampaign, &weightMsgCreateCampaign, nil,
 		func(_ *rand.Rand) {
 			weightMsgCreateCampaign = defaultWeightMsgCreateCampaign
 		},
@@ -91,7 +90,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgUpdateCampaign int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateCampaign, &weightMsgUpdateCampaign, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgUpdateCampaign, &weightMsgUpdateCampaign, nil,
 		func(_ *rand.Rand) {
 			weightMsgUpdateCampaign = defaultWeightMsgUpdateCampaign
 		},
@@ -102,7 +101,7 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	))
 
 	var weightMsgDeleteCampaign int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteCampaign, &weightMsgDeleteCampaign, nil,
+	simState.AppParams.GetOrGenerate(opWeightMsgDeleteCampaign, &weightMsgDeleteCampaign, nil,
 		func(_ *rand.Rand) {
 			weightMsgDeleteCampaign = defaultWeightMsgDeleteCampaign
 		},

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/x/orderbook/types"
@@ -29,7 +30,7 @@ func (k Keeper) GetExposureByOrderBookAndOdds(
 	bookUID, oddsUID string,
 ) (list []types.ParticipationExposure, err error) {
 	store := k.getParticipationExposureStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetParticipationExposuresKey(bookUID, oddsUID))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetParticipationExposuresKey(bookUID, oddsUID))
 
 	defer func() {
 		err = iterator.Close()
@@ -51,7 +52,7 @@ func (k Keeper) GetExposureByOrderBook(
 ) (peMap map[uint64]map[string]*types.ParticipationExposure, err error) {
 	peMap = make(map[uint64]map[string]*types.ParticipationExposure)
 	store := k.getParticipationExposureStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetParticipationExposuresByOrderBookKey(bookUID))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetParticipationExposuresByOrderBookKey(bookUID))
 
 	defer func() {
 		err = iterator.Close()
@@ -75,7 +76,7 @@ func (k Keeper) GetAllParticipationExposures(
 	ctx sdk.Context,
 ) (list []types.ParticipationExposure, err error) {
 	store := k.getParticipationExposureStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()
@@ -110,7 +111,7 @@ func (k Keeper) GetExposureByOrderBookAndParticipationIndex(
 	participationIndex uint64,
 ) (list []types.ParticipationExposure, err error) {
 	store := k.getParticipationExposureByIndexStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(
+	iterator := storetypes.KVStorePrefixIterator(
 		store,
 		types.GetParticipationByIndexKey(bookUID, participationIndex),
 	)
@@ -155,7 +156,7 @@ func (k Keeper) GetAllHistoricalParticipationExposures(
 	ctx sdk.Context,
 ) (list []types.ParticipationExposure, err error) {
 	store := k.getHistoricalParticipationExposureStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

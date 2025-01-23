@@ -58,7 +58,7 @@ func NewRewardFactoryData(receiver Receiver, common RewardPayloadCommon) RewardF
 }
 
 func newRewardAmount(mainAccountAmount, subaccountAmount sdkmath.Int,
-	mainAccountPercentage, subaccountPercentage sdk.Dec,
+	mainAccountPercentage, subaccountPercentage sdkmath.LegacyDec,
 	unlockPeriod uint64,
 ) RewardAmount {
 	return RewardAmount{
@@ -112,7 +112,7 @@ type IRewardFactory interface {
 // NewReceiver creates receiver object.
 func NewReceiver(maAddr, saAddr string,
 	maAmount, saAmount sdkmath.Int,
-	maPercentage, saPercentage sdk.Dec,
+	maPercentage, saPercentage sdkmath.LegacyDec,
 	unlockPeriod uint64,
 ) Receiver {
 	return Receiver{

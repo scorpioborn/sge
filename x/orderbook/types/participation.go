@@ -5,7 +5,6 @@ import (
 
 	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	housetypes "github.com/sge-network/sge/x/house/types"
 )
@@ -147,13 +146,13 @@ func (p *OrderBookParticipation) IsEligibleForNextRound() bool {
 // IsEligibleForNextRound determines if the participation has enough
 // liquidity to be used in the next round or not
 func (p *OrderBookParticipation) IsEligibleForNextRoundPreLiquidityReduction() bool {
-	maxLoss := sdk.MaxInt(sdkmath.ZeroInt(), p.CurrentRoundMaxLoss)
+	maxLoss := sdkmath.MaxInt(sdkmath.ZeroInt(), p.CurrentRoundMaxLoss)
 	return p.CurrentRoundLiquidity.Sub(maxLoss).GT(sdkmath.ZeroInt())
 }
 
 // TrimCurrentRoundLiquidity subtracts the max loss from the current round liquidity.
 func (p *OrderBookParticipation) TrimCurrentRoundLiquidity() {
-	maxLoss := sdk.MaxInt(sdkmath.ZeroInt(), p.CurrentRoundMaxLoss)
+	maxLoss := sdkmath.MaxInt(sdkmath.ZeroInt(), p.CurrentRoundMaxLoss)
 	p.CurrentRoundLiquidity = p.CurrentRoundLiquidity.Sub(maxLoss)
 }
 

@@ -34,7 +34,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	// minter
 	var inflation sdkmath.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, Inflation, &inflation, simState.Rand,
+		Inflation, &inflation, simState.Rand,
 		func(r *rand.Rand) { inflation = GenInflation(r) },
 	)
 

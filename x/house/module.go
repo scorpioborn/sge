@@ -89,16 +89,22 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	keeper *keeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
-	return AppModule{
+func NewAppModule(cdc codec.Codec, keeper *keeper.Keeper) *AppModule {
+	return &AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 	}
 }
+
+// IsAppModule implements the appmodule.AppModule interface.
+func (am AppModule) IsAppModule() {}
+
+// IsOnePerModuleType is a marker function just indicates that this is a one-per-module type.
+func (am AppModule) IsOnePerModuleType() {}
 
 // RegisterInvariants registers the house module invariants.
 func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}

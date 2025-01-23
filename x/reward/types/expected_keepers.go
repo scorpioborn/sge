@@ -6,7 +6,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/authz"
 
 	bettypes "github.com/sge-network/sge/x/bet/types"
@@ -16,17 +15,17 @@ import (
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
+	GetAccount(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
 	GetModuleAddress(moduleName string) sdk.AccAddress
 	// Methods imported from account should be defined here
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, ecipientModule string, amt sdk.Coins) error
-	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
-	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, ecipientModule string, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(ctx context.Context, senderModule, recipientModule string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
 }
 
@@ -49,19 +48,19 @@ type OVMKeeper interface {
 // AuthzKeeper defines the expected authz keeper.
 type AuthzKeeper interface {
 	GetAuthorization(
-		ctx sdk.Context,
+		ctx context.Context,
 		grantee sdk.AccAddress,
 		granter sdk.AccAddress,
 		msgType string,
 	) (authz.Authorization, *time.Time)
 	SaveGrant(
-		ctx sdk.Context,
+		ctx context.Context,
 		grantee, granter sdk.AccAddress,
 		authorization authz.Authorization,
 		expiration *time.Time,
 	) error
 	DeleteGrant(
-		ctx sdk.Context,
+		ctx context.Context,
 		grantee, granter sdk.AccAddress,
 		msgType string,
 	) error

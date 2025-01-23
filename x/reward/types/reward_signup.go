@@ -63,7 +63,7 @@ func (sur SignUpReward) Calculate(goCtx context.Context, ctx sdk.Context, keeper
 			subaccountAddrStr,
 			campaign.RewardAmount.MainAccountAmount,
 			campaign.RewardAmount.SubaccountAmount,
-			sdk.ZeroDec(), sdk.ZeroDec(),
+			sdkmath.LegacyZeroDec(), sdkmath.LegacyZeroDec(),
 			campaign.RewardAmount.UnlockPeriod,
 		),
 		payload.Common,

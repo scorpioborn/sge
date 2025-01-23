@@ -4,8 +4,8 @@ import (
 	context "context"
 
 	sdkmath "cosmossdk.io/math"
+	sdkfeegrant "cosmossdk.io/x/feegrant"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkfeegrant "github.com/cosmos/cosmos-sdk/x/feegrant"
 
 	bettypes "github.com/sge-network/sge/x/bet/types"
 	housetypes "github.com/sge-network/sge/x/house/types"
@@ -19,21 +19,21 @@ type AccountKeeper interface {
 
 // BankKeeper defines the expected bank keeper methods.
 type BankKeeper interface {
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 	SendCoinsFromAccountToModule(
-		ctx sdk.Context,
+		ctx context.Context,
 		senderAddr sdk.AccAddress,
 		recipientModule string,
 		amt sdk.Coins,
 	) error
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 	SendCoinsFromModuleToModule(
-		ctx sdk.Context,
+		ctx context.Context,
 		senderModule, recipientModule string,
 		amt sdk.Coins,
 	) error
 	SendCoinsFromModuleToAccount(
-		ctx sdk.Context,
+		ctx context.Context,
 		senderModule string,
 		recipientAddr sdk.AccAddress,
 		amt sdk.Coins,
@@ -67,11 +67,11 @@ type OVMKeeper interface {
 // FeeGrantKeeper defines the expected interface needed for the fee grant.
 type FeeGrantKeeper interface {
 	GrantAllowance(
-		ctx sdk.Context,
+		ctx context.Context,
 		granter, grantee sdk.AccAddress,
 		feeAllowance sdkfeegrant.FeeAllowanceI,
 	) error
-	GetAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress) (sdkfeegrant.FeeAllowanceI, error)
+	GetAllowance(ctx context.Context, granter, grantee sdk.AccAddress) (sdkfeegrant.FeeAllowanceI, error)
 }
 
 // Event Hooks

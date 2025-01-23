@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cometbft/cometbft/libs/log"
+	"cosmossdk.io/log"
+	storetypes "cosmossdk.io/store/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
@@ -40,7 +40,6 @@ func NewKeeper(
 	ak types.AccountKeeper,
 	expectedKeepers ExpectedKeepers,
 	feeCollectorName string,
-	authority string,
 ) *Keeper {
 	// ensure mint module account is set
 	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
@@ -59,7 +58,6 @@ func NewKeeper(
 		stakingKeeper:    expectedKeepers.StakingKeeper,
 		bankKeeper:       expectedKeepers.BankKeeper,
 		feeCollectorName: feeCollectorName,
-		authority:        authority,
 	}
 }
 

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/x/orderbook/types"
@@ -20,7 +21,7 @@ func (k Keeper) GetAllParticipationBetPair(
 	ctx sdk.Context,
 ) (list []types.ParticipationBetPair, err error) {
 	store := k.getParticipationBetPairStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

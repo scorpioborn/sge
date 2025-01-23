@@ -1,6 +1,8 @@
 package types
 
 import (
+	context "context"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrtypes "github.com/cosmos/cosmos-sdk/types/errors"
@@ -26,7 +28,7 @@ func (CreateCampaignAuthorization) MsgTypeURL() string {
 }
 
 // Accept implements Authorization.Accept.
-func (a CreateCampaignAuthorization) Accept(_ sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
+func (a CreateCampaignAuthorization) Accept(_ context.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	msgCreateCampaign, ok := msg.(*MsgCreateCampaign)
 	if !ok {
 		return authz.AcceptResponse{}, sdkerrtypes.ErrInvalidType.Wrap("type mismatch")
@@ -78,7 +80,7 @@ func (UpdateCampaignAuthorization) MsgTypeURL() string {
 }
 
 // Accept implements Authorization.Accept.
-func (a UpdateCampaignAuthorization) Accept(_ sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
+func (a UpdateCampaignAuthorization) Accept(_ context.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	msgUpdateCampaign, ok := msg.(*MsgUpdateCampaign)
 	if !ok {
 		return authz.AcceptResponse{}, sdkerrtypes.ErrInvalidType.Wrap("type mismatch")
@@ -136,7 +138,7 @@ func (WithdrawCampaignAuthorization) MsgTypeURL() string {
 }
 
 // Accept implements Authorization.Accept.
-func (a WithdrawCampaignAuthorization) Accept(_ sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
+func (a WithdrawCampaignAuthorization) Accept(_ context.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	mWithdraw, ok := msg.(*MsgWithdrawFunds)
 	if !ok {
 		return authz.AcceptResponse{}, sdkerrtypes.ErrInvalidType.Wrap("type mismatch")

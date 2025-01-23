@@ -5,7 +5,6 @@ import (
 
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	bettypes "github.com/sge-network/sge/x/bet/types"
 	housetypes "github.com/sge-network/sge/x/house/types"
@@ -19,14 +18,14 @@ type BetKeeper interface {
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
 type AccountKeeper interface {
-	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
-	SetAccount(ctx sdk.Context, acc authtypes.AccountI)
+	NewAccountWithAddress(ctx context.Context, addr sdk.AccAddress) sdk.AccountI
+	SetAccount(ctx context.Context, acc sdk.AccountI)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-	SendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
+	SendCoins(ctx context.Context, fromAddr, toAddr sdk.AccAddress, amt sdk.Coins) error
+	GetBalance(ctx context.Context, addr sdk.AccAddress, denom string) sdk.Coin
 }
 
 // HouseKeeper defines the expected interface needed to deposit or withdraw.

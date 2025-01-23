@@ -35,13 +35,13 @@ func GenMinDeposit(r *rand.Rand) sdkmath.Int {
 func RandomizedGenState(simState *module.SimulationState) {
 	var houseParticipationFee sdkmath.LegacyDec
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, HouseParticipationFee, &houseParticipationFee, simState.Rand,
+		HouseParticipationFee, &houseParticipationFee, simState.Rand,
 		func(r *rand.Rand) { houseParticipationFee = GenHouseParticipationFee(r) },
 	)
 
 	var minDeposit sdkmath.Int
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, MinDeposit, &minDeposit, simState.Rand,
+		MinDeposit, &minDeposit, simState.Rand,
 		func(r *rand.Rand) { minDeposit = GenMinDeposit(r) },
 	)
 

@@ -3,6 +3,7 @@ package keeper
 import (
 	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	housetypes "github.com/sge-network/sge/x/house/types"
@@ -46,7 +47,7 @@ func (k Keeper) GetParticipationsOfOrderBook(
 	bookUID string,
 ) (list []types.OrderBookParticipation, err error) {
 	store := k.getParticipationStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetOrderBookParticipationsKey(bookUID))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetOrderBookParticipationsKey(bookUID))
 
 	defer func() {
 		err = iterator.Close()
@@ -66,7 +67,7 @@ func (k Keeper) GetAllOrderBookParticipations(
 	ctx sdk.Context,
 ) (list []types.OrderBookParticipation, err error) {
 	store := k.getParticipationStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

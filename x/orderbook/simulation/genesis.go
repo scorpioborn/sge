@@ -40,19 +40,19 @@ func GenRequeueThreshold(r *rand.Rand) uint64 {
 func RandomizedGenState(simState *module.SimulationState) {
 	var batchSettlementCount uint64
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, BatchSettlementCount, &batchSettlementCount, simState.Rand,
+		BatchSettlementCount, &batchSettlementCount, simState.Rand,
 		func(r *rand.Rand) { batchSettlementCount = GenBatchSettlementCount(r) },
 	)
 
 	var maxOrderBookParticipations uint64
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, MaxOrderBookParticipations, &maxOrderBookParticipations, simState.Rand,
+		MaxOrderBookParticipations, &maxOrderBookParticipations, simState.Rand,
 		func(r *rand.Rand) { maxOrderBookParticipations = GenMaxOrderBookParticipations(r) },
 	)
 
 	var requeueThreshold uint64
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, RequeueThreshold, &requeueThreshold, simState.Rand,
+		RequeueThreshold, &requeueThreshold, simState.Rand,
 		func(r *rand.Rand) { requeueThreshold = GenRequeueThreshold(r) },
 	)
 

@@ -33,9 +33,9 @@ func (payload *CreateCampaignPayload) Validate(blockTime uint64) error {
 	switch payload.RewardAmountType {
 	case RewardAmountType_REWARD_AMOUNT_TYPE_FIXED:
 		if (!payload.RewardAmount.MainAccountPercentage.IsNil() &&
-			payload.RewardAmount.MainAccountPercentage.GT(sdk.ZeroDec())) ||
+			payload.RewardAmount.MainAccountPercentage.GT(sdkmath.LegacyZeroDec())) ||
 			(!payload.RewardAmount.SubaccountPercentage.IsNil() &&
-				payload.RewardAmount.SubaccountPercentage.GT(sdk.ZeroDec())) {
+				payload.RewardAmount.SubaccountPercentage.GT(sdkmath.LegacyZeroDec())) {
 			return sdkerrors.Wrapf(sdkerrtypes.ErrInvalidRequest, "reward percentage is not allowed for fixed amount campaign")
 		}
 		if (payload.RewardAmount.MainAccountAmount.IsNil() ||
@@ -52,9 +52,9 @@ func (payload *CreateCampaignPayload) Validate(blockTime uint64) error {
 			return sdkerrors.Wrapf(sdkerrtypes.ErrInvalidRequest, "reward amount is not allowed for percentage campaign")
 		}
 		if (payload.RewardAmount.MainAccountPercentage.IsNil() ||
-			payload.RewardAmount.MainAccountPercentage.LTE(sdk.ZeroDec())) &&
+			payload.RewardAmount.MainAccountPercentage.LTE(sdkmath.LegacyZeroDec())) &&
 			(payload.RewardAmount.SubaccountPercentage.IsNil() ||
-				payload.RewardAmount.SubaccountPercentage.LTE(sdk.ZeroDec())) {
+				payload.RewardAmount.SubaccountPercentage.LTE(sdkmath.LegacyZeroDec())) {
 			return sdkerrors.Wrapf(sdkerrtypes.ErrInvalidRequest, "reward percentage should be set for at least one of main account or subaccount")
 		}
 	default:
@@ -64,7 +64,7 @@ func (payload *CreateCampaignPayload) Validate(blockTime uint64) error {
 	if ((!payload.RewardAmount.SubaccountAmount.IsNil() &&
 		payload.RewardAmount.SubaccountAmount.GT(sdkmath.ZeroInt())) ||
 		(!payload.RewardAmount.SubaccountPercentage.IsNil() &&
-			payload.RewardAmount.SubaccountPercentage.GT(sdk.ZeroDec()))) &&
+			payload.RewardAmount.SubaccountPercentage.GT(sdkmath.LegacyZeroDec()))) &&
 		payload.RewardAmount.UnlockPeriod == 0 {
 		return sdkerrors.Wrapf(sdkerrtypes.ErrInvalidRequest, "sub account should have unlock period")
 	}

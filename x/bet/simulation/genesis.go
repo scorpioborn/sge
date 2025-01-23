@@ -47,25 +47,25 @@ func GenFee(r *rand.Rand) sdkmath.Int {
 func RandomizedGenState(simState *module.SimulationState) {
 	var batchSettlementCount uint32
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, BatchSettlementCount, &batchSettlementCount, simState.Rand,
+		BatchSettlementCount, &batchSettlementCount, simState.Rand,
 		func(r *rand.Rand) { batchSettlementCount = GenBatchSettlementCount(r) },
 	)
 
 	var maxBetByUIDQueryCount uint32
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, MaxBetByUIDQueryCount, &maxBetByUIDQueryCount, simState.Rand,
+		MaxBetByUIDQueryCount, &maxBetByUIDQueryCount, simState.Rand,
 		func(r *rand.Rand) { maxBetByUIDQueryCount = GenMaxBetByUIDQueryCount(r) },
 	)
 
 	var minAmount sdkmath.Int
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, MinAmount, &minAmount, simState.Rand,
+		MinAmount, &minAmount, simState.Rand,
 		func(r *rand.Rand) { minAmount = GenMinAmount(r) },
 	)
 
 	var minBetFee sdkmath.Int
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, BetFee, &minBetFee, simState.Rand,
+		BetFee, &minBetFee, simState.Rand,
 		func(r *rand.Rand) { minBetFee = GenFee(r) },
 	)
 

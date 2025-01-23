@@ -6,25 +6,26 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 
-	dbm "github.com/cometbft/cometbft-db"
+	"cosmossdk.io/log"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmjson "github.com/cometbft/cometbft/libs/json"
-	"github.com/cometbft/cometbft/libs/log"
 	tmos "github.com/cometbft/cometbft/libs/os"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	dbm "github.com/cosmos/cosmos-db"
 
-	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
 
+	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
+	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
+	storetypes "cosmossdk.io/store/types"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
-	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -36,16 +37,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	"github.com/cosmos/cosmos-sdk/x/auth/posthandler"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
+	"github.com/cosmos/cosmos-sdk/x/gov"
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	ibcwasmkeeper "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/keeper"
-	ibcclientHandler "github.com/cosmos/ibc-go/v7/modules/core/02-client/client"
+	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
 
 	wasm "github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -56,9 +58,9 @@ import (
 	"github.com/sge-network/sge/app/upgrades"
 	v10 "github.com/sge-network/sge/app/upgrades/v10"
 	v9 "github.com/sge-network/sge/app/upgrades/v9"
-
 	// unnamed import of statik for swagger UI support
-	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
+	// TODO: Check if needed
+	// _ "github.com/cosmos/cosmos-sdk/client/docs/statik"
 )
 
 func getGovProposalHandlers() []govclient.ProposalHandler {
@@ -66,10 +68,6 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 
 	govProposalHandlers = append(govProposalHandlers,
 		paramsclient.ProposalHandler,
-		upgradeclient.LegacyProposalHandler,
-		upgradeclient.LegacyCancelProposalHandler,
-		ibcclientHandler.UpdateClientProposalHandler,
-		ibcclientHandler.UpgradeProposalHandler,
 	)
 
 	return govProposalHandlers
@@ -78,7 +76,11 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome string
-	Upgrades        = []upgrades.Upgrade{
+
+	// module account permissions
+	maccPerms = moduleAccountPermissions
+
+	Upgrades = []upgrades.Upgrade{
 		v9.Upgrade,
 		v10.Upgrade,
 	}
@@ -116,9 +118,13 @@ type SgeApp struct {
 	// the module manager
 	mm *module.Manager
 
+	// basics manager
+	ModuleBasics module.BasicManager
+
 	// simulation manager
 	sm           *module.SimulationManager
 	configurator module.Configurator
+	homePath     string
 }
 
 // NewSgeApp returns a reference to an initialized Sge.
@@ -135,21 +141,20 @@ func NewSgeApp(
 	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *SgeApp {
+	wasmtypes.MaxWasmSize = defaultMaxWasmSize
+	wasmtypes.MaxProposalWasmSize = wasmtypes.MaxWasmSize
+
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
-	bApp := baseapp.NewBaseApp(
-		appName,
-		logger,
-		db,
-		encodingConfig.TxConfig.TxDecoder(),
-		baseAppOptions...)
+	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 
 	app := &SgeApp{
+		AppKeepers:        keepers.AppKeepers{},
 		BaseApp:           bApp,
 		cdc:               cdc,
 		appCodec:          appCodec,
@@ -157,26 +162,44 @@ func NewSgeApp(
 		invCheckPeriod:    invCheckPeriod,
 	}
 
+	app.homePath = homePath
+	dataDir := filepath.Join(homePath, "data")
+	wasmDir := filepath.Join(homePath, "wasm")
+	ibcWasmConfig := ibcwasmtypes.WasmConfig{
+		DataDir:               filepath.Join(homePath, "ibc_08-wasm"),
+		SupportedCapabilities: []string{"iterator", "stargate", "abort"},
+		ContractDebugMode:     false,
+	}
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	// Uncomment this for debugging contracts. In the future this could be made into a param passed by the tests
+	// wasmConfig.ContractDebugMode = true
+	if err != nil {
+		panic(fmt.Sprintf("error while reading wasm config: %s", err))
+	}
+
 	// Setup keepers
-	app.AppKeepers = keepers.NewAppKeeper(
+	app.InitSpecialKeepers(
 		appCodec,
 		bApp,
+		wasmDir,
 		cdc,
-		mAccPerms,
+		invCheckPeriod,
 		skipUpgradeHeights,
 		homePath,
-		invCheckPeriod,
-		wasmOpts,
-		appOpts,
 	)
-
-	if maxSize := os.Getenv("MAX_WASM_SIZE"); maxSize != "" {
-		// https://github.com/CosmWasm/wasmd#compile-time-parameters
-		val, _ := strconv.ParseInt(maxSize, 10, 32)
-		wasmtypes.MaxWasmSize = int(val)
-	} else {
-		wasmtypes.MaxWasmSize = defaultMaxWasmSize
-	}
+	app.setupUpgradeStoreLoaders()
+	app.InitNormalKeepers(
+		appCodec,
+		encodingConfig,
+		bApp,
+		maccPerms,
+		dataDir,
+		wasmDir,
+		wasmConfig,
+		wasmOpts,
+		app.BlockedAddresses(),
+		ibcWasmConfig,
+	)
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
@@ -185,6 +208,9 @@ func NewSgeApp(
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(appModules(app, encodingConfig, skipGenesisInvariants)...)
+
+	// Upgrades from v0.50.x onwards happen in pre block
+	app.mm.SetOrderPreBlockers(upgradetypes.ModuleName)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -208,21 +234,38 @@ func NewSgeApp(
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),
 	)
-	app.mm.RegisterServices(app.configurator)
-
-	// v47 - no dependecy injection, so register new gRPC services.
-	//#nosec
-	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.mm.Modules))
-	reflectionSvc, err := runtimeservices.NewReflectionService()
+	err = app.mm.RegisterServices(app.configurator)
 	if err != nil {
 		panic(err)
 	}
-	reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
 
-	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
-	if err != nil {
-		panic("error while reading wasm config: " + err.Error())
-	}
+	// // v47 - no dependecy injection, so register new gRPC services.
+	// //#nosec
+	// autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.mm.Modules))
+	// reflectionSvc, err := runtimeservices.NewReflectionService()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
+
+	// wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	// if err != nil {
+	// 	panic("error while reading wasm config: " + err.Error())
+	// }
+
+	// Override the gov ModuleBasic with all the custom proposal handers, otherwise we lose them in the CLI.
+	app.ModuleBasics = module.NewBasicManagerFromManager(
+		app.mm,
+		map[string]module.AppModuleBasic{
+			"gov": gov.NewAppModuleBasic(
+				[]govclient.ProposalHandler{
+					paramsclient.ProposalHandler,
+				},
+			),
+		},
+	)
+
+	app.setupUpgradeHandlers()
 
 	// create the simulation manager and define the order of the modules for deterministic simulations
 	//
@@ -233,6 +276,11 @@ func NewSgeApp(
 
 	app.sm.RegisterStoreDecoders()
 
+	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.mm.Modules))
+
+	reflectionSvc := getReflectionService()
+	reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
+
 	// initialize stores
 	app.MountKVStores(app.GetKVStoreKey())
 	app.MountTransientStores(app.GetTransientStoreKey())
@@ -240,47 +288,52 @@ func NewSgeApp(
 
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
+	app.SetPreBlocker(app.PreBlocker)
 	app.SetBeginBlocker(app.BeginBlocker)
+
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
 			HandlerOptions: ante.HandlerOptions{
-				AccountKeeper:   app.AppKeepers.AccountKeeper,
-				BankKeeper:      app.AppKeepers.BankKeeper,
-				FeegrantKeeper:  app.AppKeepers.FeeGrantKeeper,
+				AccountKeeper:   app.AccountKeeper,
+				BankKeeper:      app.BankKeeper,
 				SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+				FeegrantKeeper:  app.FeeGrantKeeper,
 				SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 			},
 
-			GovKeeper:         *app.AppKeepers.GovKeeper,
-			IBCKeeper:         app.AppKeepers.IBCKeeper,
-			BankKeeper:        app.AppKeepers.BankKeeper,
-			TxCounterStoreKey: app.AppKeepers.GetKey(wasmtypes.StoreKey),
-			WasmConfig:        &wasmConfig,
-			WasmKeeper:        &app.WasmKeeper,
-			Cdc:               appCodec,
-
-			StakingKeeper: *app.AppKeepers.StakingKeeper,
+			IBCKeeper:             app.IBCKeeper,
+			WasmConfig:            &wasmConfig,
+			WasmKeeper:            app.WasmKeeper,
+			TXCounterStoreService: runtime.NewKVStoreService(app.GetKey(wasmtypes.StoreKey)),
+			CircuitKeeper:         app.CircuitBreakerKeeper,
 		},
 	)
 	if err != nil {
 		panic(fmt.Errorf(ErrTextFailedToCreateAnteHandler, err))
 	}
 	app.SetAnteHandler(anteHandler)
+	if err := app.setPostHandler(); err != nil {
+		panic(fmt.Errorf("%s", err))
+	}
 	app.SetEndBlocker(app.EndBlocker)
+	app.SetPrecommiter(app.Precommitter)
+	app.SetPrepareCheckStater(app.PrepareCheckStater)
 
 	if manager := app.SnapshotManager(); manager != nil {
 		err = manager.RegisterExtensions(
-			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.AppKeepers.WasmKeeper),
-			// https://github.com/cosmos/ibc-go/pull/5439
-			ibcwasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.AppKeepers.WasmClientKeeper),
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), app.AppKeepers.WasmKeeper),
 		)
 		if err != nil {
 			panic("failed to register snapshot extension: " + err.Error())
 		}
-	}
 
-	app.setupUpgradeHandlers()
-	app.setupUpgradeStoreLoaders()
+		err = manager.RegisterExtensions(
+			ibcwasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), app.IBCWasmClientKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+		}
+	}
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
@@ -289,7 +342,7 @@ func NewSgeApp(
 		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 
 		// https://github.com/cosmos/ibc-go/pull/5439
-		if err := ibcwasmkeeper.InitializePinnedCodes(ctx, appCodec); err != nil {
+		if err := ibcwasmkeeper.InitializePinnedCodes(ctx); err != nil {
 			tmos.Exit(fmt.Sprintf("wasmlckeeper failed initialize pinned codes %s", err))
 		}
 
@@ -301,6 +354,49 @@ func NewSgeApp(
 	}
 
 	return app
+}
+
+func (app *SgeApp) setPostHandler() error {
+	postHandler, err := posthandler.NewPostHandler(
+		posthandler.HandlerOptions{},
+	)
+	if err != nil {
+		return err
+	}
+	app.SetPostHandler(postHandler)
+	return nil
+}
+
+// Precommitter application updates before the commital of a block after all transactions have been delivered.
+func (app *SgeApp) Precommitter(ctx sdk.Context) {
+	mm := app.ModuleManager()
+	if err := mm.Precommit(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// PreBlocker application updates before each begin block.
+func (app *SgeApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+	// Set gas meter to the free gas meter.
+	// This is because there is currently non-deterministic gas usage in the
+	// pre-blocker, e.g. due to hydration of in-memory data structures.
+	//
+	// Note that we don't need to reset the gas meter after the pre-blocker
+	// because Go is pass by value.
+	ctx = ctx.WithGasMeter(storetypes.NewInfiniteGasMeter())
+	mm := app.ModuleManager()
+	return mm.PreBlock(ctx)
+}
+
+func (app *SgeApp) PrepareCheckStater(ctx sdk.Context) {
+	mm := app.ModuleManager()
+	if err := mm.PrepareCheckState(ctx); err != nil {
+		panic(err)
+	}
+}
+
+func (app *SgeApp) ModuleManager() module.Manager {
+	return *app.mm
 }
 
 // MakeCodecs constructs the *std.Codec and *codec.LegacyAmino instances used by
@@ -319,24 +415,27 @@ func (app *SgeApp) Name() string { return app.BaseApp.Name() }
 // GetBaseApp returns the base app of the application
 func (app *SgeApp) GetBaseApp() *baseapp.BaseApp { return app.BaseApp }
 
-// BeginBlocker application updates every begin block
-func (app *SgeApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
-	return app.mm.BeginBlock(ctx, req)
+// BeginBlocker application updates every begin block.
+func (app *SgeApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+	return app.mm.BeginBlock(ctx)
 }
 
-// EndBlocker application updates every end block
-func (app *SgeApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
-	return app.mm.EndBlock(ctx, req)
+// EndBlocker application updates every end block.
+func (app *SgeApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
+	return app.mm.EndBlock(ctx)
 }
 
-// InitChainer application update at chain initialization
-func (app *SgeApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+// InitChainer application update at chain initialization.
+func (app *SgeApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
 	var genesisState GenesisState
 	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
 
-	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
+	err := app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
+	if err != nil {
+		panic(err)
+	}
 
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
@@ -351,7 +450,7 @@ func (app *SgeApp) ModuleAccountAddrs() map[string]bool {
 	modAccAddrs := make(map[string]bool)
 
 	//#nosec
-	for acc := range mAccPerms {
+	for acc := range maccPerms {
 		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
@@ -394,7 +493,7 @@ func (app *SgeApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APICon
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 	// Register new tendermint queries routes from grpc-gateway.
-	tmservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+	cmtservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 	// Register node gRPC service for grpc-gateway.
 	nodeservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 	// Register grpc-gateway routes for all modules.
@@ -418,11 +517,12 @@ func (app *SgeApp) RegisterTxService(clientCtx client.Context) {
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
 func (app *SgeApp) RegisterTendermintService(clientCtx client.Context) {
-	tmservice.RegisterTendermintService(clientCtx, app.BaseApp.GRPCQueryRouter(), app.interfaceRegistry, app.Query)
+	cmtservice.RegisterTendermintService(clientCtx, app.BaseApp.GRPCQueryRouter(), app.interfaceRegistry, app.Query)
 }
 
-func (app *SgeApp) RegisterNodeService(clientCtx client.Context) {
-	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter())
+// RegisterNodeService registers the node gRPC Query service.
+func (app *SgeApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
+	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
 }
 
 // configure store loader that checks if version == upgradeHeight and applies store upgrades
@@ -473,7 +573,7 @@ func RegisterSwaggerAPI(rtr *mux.Router) {
 // GetMaccPerms returns a copy of the module account permissions
 func GetMaccPerms() map[string][]string {
 	dupMaccPerms := make(map[string][]string)
-	for k, v := range mAccPerms {
+	for k, v := range maccPerms {
 		dupMaccPerms[k] = v
 	}
 	return dupMaccPerms
@@ -482,4 +582,32 @@ func GetMaccPerms() map[string][]string {
 // SimulationManager implements the SimulationApp interface
 func (app *SgeApp) SimulationManager() *module.SimulationManager {
 	return app.sm
+}
+
+// BlockedAddresses returns all the app's blocked account addresses.
+func (app *SgeApp) BlockedAddresses() map[string]bool {
+	modAccAddrs := make(map[string]bool)
+	for acc := range GetMaccPerms() {
+		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
+	}
+
+	// allow the following addresses to receive funds
+	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
+	return modAccAddrs
+}
+
+// we cache the reflectionService to save us time within tests.
+var cachedReflectionService *runtimeservices.ReflectionService = nil
+
+func getReflectionService() *runtimeservices.ReflectionService {
+	if cachedReflectionService != nil {
+		return cachedReflectionService
+	}
+	reflectionSvc, err := runtimeservices.NewReflectionService()
+	if err != nil {
+		panic(err)
+	}
+	cachedReflectionService = reflectionSvc
+	return reflectionSvc
 }

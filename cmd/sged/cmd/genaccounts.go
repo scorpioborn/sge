@@ -232,11 +232,14 @@ func getAndValidateGenesisAccount(
 	}
 
 	if !vestingAmt.IsZero() {
-		baseVestingAccount := authvesting.NewBaseVestingAccount(
+		baseVestingAccount, err := authvesting.NewBaseVestingAccount(
 			baseAccount,
 			vestingAmt.Sort(),
 			vestingEnd,
 		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create base vesting account: %w", err)
+		}
 
 		if (balances.Coins.IsZero() && !baseVestingAccount.OriginalVesting.IsZero()) ||
 			baseVestingAccount.OriginalVesting.IsAnyGT(balances.Coins) {

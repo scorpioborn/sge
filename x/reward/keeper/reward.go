@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/sge-network/sge/utils"
 	"github.com/sge-network/sge/x/reward/types"
 )
@@ -41,7 +43,7 @@ func (k Keeper) RemoveReward(
 // GetAllRewards returns all reward
 func (k Keeper) GetAllRewards(ctx sdk.Context) (list []types.Reward) {
 	store := k.getRewardStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -57,7 +59,7 @@ func (k Keeper) GetAllRewards(ctx sdk.Context) (list []types.Reward) {
 // GetAllRewardsOfReceiverByPromoterAndCategory returns all reward by promoter and category
 func (k Keeper) GetAllRewardsOfReceiverByPromoterAndCategory(ctx sdk.Context) (list []types.RewardByCategory) {
 	store := k.getRewardByReceiverAndCategoryStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -88,7 +90,7 @@ func (k Keeper) GetRewardsOfReceiverByPromoterAndCategory(
 	category types.RewardCategory,
 ) (list []types.RewardByCategory, err error) {
 	store := k.getRewardByReceiverAndCategoryStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, types.GetRewardsOfReceiverByPromoterAndCategoryPrefix(promoterUID, addr, category))
+	iterator := storetypes.KVStorePrefixIterator(store, types.GetRewardsOfReceiverByPromoterAndCategoryPrefix(promoterUID, addr, category))
 
 	defer func() {
 		err = iterator.Close()
@@ -115,7 +117,7 @@ func (k Keeper) HasRewardOfReceiverByPromoter(ctx sdk.Context, promoterUID, addr
 // GetAllRewardsByReceiverAndCategory returns all rewards by receiver and category
 func (k Keeper) GetAllRewardsByReceiverAndCategory(ctx sdk.Context) (list []types.RewardByCategory) {
 	store := k.getRewardByReceiverAndCategoryStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
@@ -137,7 +139,7 @@ func (k Keeper) SetRewardByCampaign(ctx sdk.Context, rewByCampaign types.RewardB
 // GetAllRewardsByCampaign returns all rewards by campaign
 func (k Keeper) GetAllRewardsByCampaign(ctx sdk.Context) (list []types.RewardByCampaign) {
 	store := k.getRewardsByCampaignStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 

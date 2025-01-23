@@ -80,10 +80,10 @@ func (sur BetBonusReward) Calculate(goCtx context.Context, ctx sdk.Context, keep
 		return RewardFactoryData{}, sdkerrors.Wrapf(sdkerrtypes.ErrInvalidRequest, "bet should be winner or loser, requested bet result is %s", bet.Result)
 	}
 
-	effectiveBetAmount := sdk.NewDecFromInt(bet.Amount)
+	effectiveBetAmount := sdkmath.LegacyNewDecFromInt(bet.Amount)
 	if campaign.Constraints != nil {
 		if !campaign.Constraints.MaxBetAmount.IsNil() && campaign.Constraints.MaxBetAmount.GT(sdkmath.ZeroInt()) {
-			effectiveBetAmount = sdk.NewDecFromInt(
+			effectiveBetAmount = sdkmath.LegacyNewDecFromInt(
 				sdkmath.MinInt(campaign.Constraints.MaxBetAmount, bet.Amount),
 			)
 		}

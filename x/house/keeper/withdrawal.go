@@ -3,6 +3,7 @@ package keeper
 import (
 	sdkerrors "cosmossdk.io/errors"
 	sdkmath "cosmossdk.io/math"
+	storetypes "cosmossdk.io/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sge-network/sge/x/house/types"
@@ -41,7 +42,7 @@ func (k Keeper) GetWithdraw(ctx sdk.Context, depositorAddress,
 // GetAllWithdrawals returns all withdrawals used during genesis dump.
 func (k Keeper) GetAllWithdrawals(ctx sdk.Context) (list []types.Withdrawal, err error) {
 	store := k.getWithdrawalStore(ctx)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
 	defer func() {
 		err = iterator.Close()

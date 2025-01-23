@@ -1,9 +1,12 @@
 package v9
 
 import (
+	"context"
 	"fmt"
 
 	sdkmath "cosmossdk.io/math"
+	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasmv2 "github.com/CosmWasm/wasmd/x/wasm/migrations/v2"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -16,13 +19,12 @@ import (
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
-	icacontrollertypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/controller/types"
-	icahosttypes "github.com/cosmos/ibc-go/v7/modules/apps/27-interchain-accounts/host/types"
-	ibctransfertypes "github.com/cosmos/ibc-go/v7/modules/apps/transfer/types"
-	exported "github.com/cosmos/ibc-go/v7/modules/core/exported"
+	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
+	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
+	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	exported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 
@@ -43,7 +45,8 @@ func CreateUpgradeHandler(
 	configurator module.Configurator,
 	k *keepers.AppKeepers,
 ) upgradetypes.UpgradeHandler {
-	return func(ctx sdk.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
+	return func(context context.Context, _ upgradetypes.Plan, fromVM module.VersionMap) (module.VersionMap, error) {
+		ctx := sdk.UnwrapSDKContext(context)
 		// https://github.com/cosmos/cosmos-sdk/pull/12363/files
 		// Set param key table for params module migration
 		for _, subspace := range k.ParamsKeeper.GetSubspaces() {
@@ -77,7 +80,7 @@ func CreateUpgradeHandler(
 
 			// wasm
 			case wasmtypes.ModuleName:
-				keyTable = wasmtypes.ParamKeyTable() //nolint:staticcheck
+				keyTable = wasmv2.ParamKeyTable() //nolint:staticcheck
 
 			// sge modules
 			case betmoduletypes.ModuleName:
@@ -107,7 +110,7 @@ func CreateUpgradeHandler(
 		// Migrate Tendermint consensus parameters from x/params module to a
 		// dedicated x/consensus module.
 		baseAppLegacySS := k.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramstypes.ConsensusParamsKeyTable())
-		baseapp.MigrateParams(ctx, baseAppLegacySS, &k.ConsensusParamsKeeper)
+		baseapp.MigrateParams(ctx, baseAppLegacySS, k.ConsensusParamsKeeper.ParamsStore)
 
 		// https://github.com/cosmos/ibc-go/blob/v7.1.0/docs/migrations/v7-to-v7_1.md
 		// explicitly update the IBC 02-client params, adding the localhost client type
@@ -117,9 +120,12 @@ func CreateUpgradeHandler(
 		k.IBCKeeper.ClientKeeper.SetParams(ctx, params)
 
 		// update gov params to use a 20% initial deposit ratio, allowing us to remote the ante handler
-		govParams := k.GovKeeper.GetParams(ctx)
+		govParams, err := k.GovKeeper.Params.Get(ctx)
+		if err != nil {
+			return nil, err
+		}
 		govParams.MinInitialDepositRatio = sdkmath.LegacyNewDec(20).Quo(sdkmath.LegacyNewDec(100)).String()
-		if err := k.GovKeeper.SetParams(ctx, govParams); err != nil {
+		if err := k.GovKeeper.Params.Set(ctx, govParams); err != nil {
 			return nil, err
 		}
 

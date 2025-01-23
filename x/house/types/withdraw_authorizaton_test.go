@@ -46,7 +46,7 @@ func TestWithdrawGrantValidateBasic(t *testing.T) {
 				&expTime)
 			require.NoError(t, err)
 
-			err = msgGrant.ValidateBasic()
+			err = msgGrant.Grant.ValidateBasic()
 			if tt.err != nil {
 				require.ErrorIs(t, err, tt.err)
 				return

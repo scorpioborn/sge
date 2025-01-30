@@ -17,30 +17,27 @@ import (
 // avoid unused import issue
 var (
 	_ = sample.AccAddress
-	_ = mintsimulation.FindAccount
 	_ = simtestutil.StakePerAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace
 )
 
-// GenerateGenesisState creates a randomized GenState of the module
+// GenerateGenesisState creates a randomized GenState of the mint module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	mintsimulation.RandomizedGenState(simState)
 }
 
-// ProposalContents doesn't return any content functions for governance proposals
-func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalMsg {
-	return nil
+// ProposalMsgs returns msgs used for governance proposals for simulations.
+func (AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
+	return mintsimulation.ProposalMsgs()
 }
 
-// RegisterStoreDecoder registers a decoder
+// RegisterStoreDecoder registers a decoder for mint module's types.
 func (am AppModule) RegisterStoreDecoder(sdr simtypes.StoreDecoderRegistry) {
-	sdr[types.StoreKey] = mintsimulation.NewDecodeStore(am.cdc)
+	sdr[types.StoreKey] = simtypes.NewStoreDecoderFuncFromCollectionsSchema(am.keeper.Schema)
 }
 
-// WeightedOperations returns the all the gov module operations with their respective weights.
+// WeightedOperations doesn't return any mint module operation.
 func (AppModule) WeightedOperations(_ module.SimulationState) []simtypes.WeightedOperation {
-	operations := make([]simtypes.WeightedOperation, 0)
-
-	return operations
+	return nil
 }

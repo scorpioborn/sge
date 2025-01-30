@@ -16,6 +16,7 @@ type StakingKeeper interface {
 // AccountKeeper defines the contract required for account APIs.
 type AccountKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
+	GetModuleAccount(ctx context.Context, moduleName string) sdk.ModuleAccountI
 }
 
 // BankKeeper defines the contract needed to be fulfilled for banking and supply

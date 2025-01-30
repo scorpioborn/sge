@@ -18,6 +18,7 @@ import (
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/consensus"
 	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
@@ -36,10 +37,15 @@ import (
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	packetforward "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
+	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	icq "github.com/cosmos/ibc-apps/modules/async-icq/v8"
+	ibchooks "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8"
 	"github.com/cosmos/ibc-go/modules/capability"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
 
 	ibchookstypes "github.com/cosmos/ibc-apps/modules/ibc-hooks/v8/types"
+	ibcwasm "github.com/cosmos/ibc-go/modules/light-clients/08-wasm"
 	ibcwasmmodule "github.com/cosmos/ibc-go/modules/light-clients/08-wasm"
 	ibcwasmtypes "github.com/cosmos/ibc-go/modules/light-clients/08-wasm/types"
 	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
@@ -85,11 +91,10 @@ var moduleAccountPermissions = map[string][]string{
 	distrtypes.ModuleName:      nil,
 	ibchookstypes.ModuleName:   nil,
 
-	mintmoduletypes.ModuleName:                     {authtypes.Minter, authtypes.Burner},
-	mintmoduletypes.DeveloperVestingModuleAcctName: nil,
-	stakingtypes.BondedPoolName:                    {authtypes.Burner, authtypes.Staking},
-	stakingtypes.NotBondedPoolName:                 {authtypes.Burner, authtypes.Staking},
-	govtypes.ModuleName:                            {authtypes.Burner},
+	mintmoduletypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
+	stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
+	stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
+	govtypes.ModuleName:            {authtypes.Burner},
 
 	// // ibc
 	ibctransfertypes.ModuleName: {authtypes.Minter, authtypes.Burner},
@@ -128,14 +133,19 @@ var ModuleBasics = module.NewBasicManager(
 	authzmodule.AppModuleBasic{},
 	vesting.AppModuleBasic{},
 	groupmodule.AppModuleBasic{},
+	consensus.AppModuleBasic{},
 
 	ibc.AppModuleBasic{},
 	wasm.AppModuleBasic{},
 	transfer.AppModuleBasic{},
+	icq.AppModuleBasic{},
 	ica.AppModuleBasic{},
 	ibcfee.AppModuleBasic{},
 	ibcwasmmodule.AppModuleBasic{},
 	ibctm.AppModuleBasic{},
+	ibchooks.AppModuleBasic{},
+	ibcwasm.AppModuleBasic{},
+	packetforward.AppModuleBasic{},
 
 	// sge
 	betmodule.AppModuleBasic{},
@@ -161,67 +171,29 @@ func appModules(
 			app.BaseApp,
 			encodingConfig.TxConfig,
 		),
-		auth.NewAppModule(appCodec, *app.AccountKeeper, nil, app.GetSubspace(authtypes.ModuleName)),
+		auth.NewAppModule(appCodec, *app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
 		vesting.NewAppModule(*app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
+		bank.NewAppModule(appCodec, *app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper, false),
-		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
-		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		mintmodule.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, app.BankKeeper),
-		slashing.NewAppModule(
-			appCodec,
-			app.SlashingKeeper,
-			app.AccountKeeper,
-			app.BankKeeper,
-			app.StakingKeeper,
-			app.GetSubspace(slashingtypes.ModuleName),
-		),
-		distr.NewAppModule(
-			appCodec,
-			*app.DistrKeeper,
-			app.AccountKeeper,
-			app.BankKeeper,
-			app.StakingKeeper,
-			app.GetSubspace(distrtypes.ModuleName),
-		),
+		gov.NewAppModule(appCodec, app.GovKeeper, *app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
+		mintmodule.NewAppModule(appCodec, *app.MintKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(mintmoduletypes.ModuleName)),
+		slashing.NewAppModule(appCodec, *app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
+		distr.NewAppModule(appCodec, *app.DistrKeeper, app.AccountKeeper, app.BankKeeper, *app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper, addresscodec.NewBech32Codec(keepers.AccountAddressPrefix)),
+		wasm.NewAppModule(appCodec, app.WasmKeeper, app.StakingKeeper, *app.AccountKeeper, app.BankKeeper, app.BaseApp.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
 		evidence.NewAppModule(*app.EvidenceKeeper),
-		feegrantmodule.NewAppModule(
-			appCodec,
-			app.AccountKeeper,
-			app.BankKeeper,
-			*app.FeeGrantKeeper,
-			app.interfaceRegistry,
-		),
-		authzmodule.NewAppModule(
-			appCodec,
-			*app.AuthzKeeper,
-			app.AccountKeeper,
-			app.BankKeeper,
-			app.interfaceRegistry,
-		),
-		groupmodule.NewAppModule(appCodec,
-			*app.GroupKeeper,
-			app.AccountKeeper,
-			app.BankKeeper,
-			app.interfaceRegistry,
-		),
-		wasm.NewAppModule(
-			appCodec,
-			app.AppKeepers.WasmKeeper,
-			app.AppKeepers.StakingKeeper,
-			app.AppKeepers.AccountKeeper,
-			app.AppKeepers.BankKeeper,
-			app.MsgServiceRouter(),
-			app.GetSubspace(wasmtypes.ModuleName),
-		),
-		app.IBCModule,
+		authzmodule.NewAppModule(appCodec, *app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		ibc.NewAppModule(app.IBCKeeper),
+		ibcwasm.NewAppModule(*app.IBCWasmClientKeeper),
+		ica.NewAppModule(app.ICAControllerKeeper, app.ICAHostKeeper),
 		sdkparams.NewAppModule(*app.ParamsKeeper),
-		app.TransferModule,
-		app.IBCFeeModule,
-		app.ICAModule,
-		ibcwasmmodule.NewAppModule(app.AppKeepers.WasmClientKeeper),
+		consensus.NewAppModule(appCodec, *app.AppKeepers.ConsensusParamsKeeper),
+		app.RawIcs20TransferAppModule,
+		ibchooks.NewAppModule(*app.AccountKeeper),
+		icq.NewAppModule(*app.AppKeepers.ICQKeeper, app.GetSubspace(icqtypes.ModuleName)),
+		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
+		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		app.BetModule,
 		app.MarketModule,
 		app.OrderbookModule,
@@ -254,7 +226,7 @@ func simulationModules(
 			app.interfaceRegistry,
 		),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		mintmodule.NewAppModule(appCodec, *app.MintKeeper, app.AccountKeeper, nil),
+		mintmodule.NewAppModule(appCodec, *app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(mintmoduletypes.ModuleName)),
 		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
 		distr.NewAppModule(
 			appCodec,
@@ -289,8 +261,6 @@ func simulationModules(
 			app.interfaceRegistry,
 		),
 		wasm.NewAppModule(appCodec, app.AppKeepers.WasmKeeper, app.AppKeepers.StakingKeeper, app.AppKeepers.AccountKeeper, app.AppKeepers.BankKeeper, app.MsgServiceRouter(), app.GetSubspace(wasmtypes.ModuleName)),
-		app.IBCModule,
-		app.TransferModule,
 
 		app.BetModule,
 		app.MarketModule,

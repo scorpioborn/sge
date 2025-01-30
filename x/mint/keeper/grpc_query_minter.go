@@ -3,52 +3,49 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/sge-network/sge/x/mint/types"
 )
 
 // Inflation returns current inflation.
-func (k Keeper) Inflation(
-	c context.Context,
-	_ *types.QueryInflationRequest,
-) (*types.QueryInflationResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	minter := k.GetMinter(ctx)
+func (q queryServer) Inflation(ctx context.Context, _ *types.QueryInflationRequest) (*types.QueryInflationResponse, error) {
+	minter, err := q.k.Minter.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.QueryInflationResponse{Inflation: minter.Inflation}, nil
 }
 
 // PhaseStep returns phase step.
-func (k Keeper) PhaseStep(
-	c context.Context,
-	_ *types.QueryPhaseStepRequest,
-) (*types.QueryPhaseStepResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	minter := k.GetMinter(ctx)
+func (q queryServer) PhaseStep(ctx context.Context, _ *types.QueryPhaseStepRequest) (*types.QueryPhaseStepResponse, error) {
+	minter, err := q.k.Minter.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.QueryPhaseStepResponse{PhaseStep: minter.PhaseStep}, nil
 }
 
 // PhaseProvisions returns current phase provision.
-func (k Keeper) PhaseProvisions(
-	c context.Context,
-	_ *types.QueryPhaseProvisionsRequest,
-) (*types.QueryPhaseProvisionsResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	minter := k.GetMinter(ctx)
-
+func (q queryServer) PhaseProvisions(ctx context.Context, _ *types.QueryPhaseProvisionsRequest) (*types.QueryPhaseProvisionsResponse, error) {
+	minter, err := q.k.Minter.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &types.QueryPhaseProvisionsResponse{PhaseProvisions: minter.PhaseProvisions}, nil
 }
 
 // EndPhaseStatus returns end phase status.
-func (k Keeper) EndPhaseStatus(
-	c context.Context,
-	_ *types.QueryEndPhaseStatusRequest,
-) (*types.QueryEndPhaseStatusResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	minter := k.GetMinter(ctx)
-	params := k.GetParams(ctx)
+func (q queryServer) EndPhaseStatus(ctx context.Context, _ *types.QueryEndPhaseStatusRequest) (*types.QueryEndPhaseStatusResponse, error) {
+	minter, err := q.k.Minter.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	params, err := q.k.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.QueryEndPhaseStatusResponse{
 		IsInEndPhase: params.IsEndPhaseByStep(int(minter.PhaseStep)),

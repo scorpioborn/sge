@@ -11,18 +11,19 @@ import (
 )
 
 // UpdateParams updates the params.
-func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+func (ms msgServer) UpdateParams(goCtx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if k.authority != req.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.authority, req.Authority)
+	if ms.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.authority, msg.Authority)
 	}
 
-	if err := req.Params.Validate(); err != nil {
+	if err := msg.Params.Validate(); err != nil {
 		return nil, err
 	}
 
-	k.SetParams(ctx, req.Params)
-
+	if err := ms.Params.Set(ctx, msg.Params); err != nil {
+		return nil, err
+	}
 	return &types.MsgUpdateParamsResponse{}, nil
 }

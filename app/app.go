@@ -200,6 +200,7 @@ func NewSgeApp(
 		app.BlockedAddresses(),
 		ibcWasmConfig,
 	)
+	app.InitSgeKeepers(appCodec)
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
@@ -238,20 +239,6 @@ func NewSgeApp(
 	if err != nil {
 		panic(err)
 	}
-
-	// // v47 - no dependecy injection, so register new gRPC services.
-	// //#nosec
-	// autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.mm.Modules))
-	// reflectionSvc, err := runtimeservices.NewReflectionService()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// reflectionv1.RegisterReflectionServiceServer(app.GRPCQueryRouter(), reflectionSvc)
-
-	// wasmConfig, err := wasm.ReadWasmConfig(appOpts)
-	// if err != nil {
-	// 	panic("error while reading wasm config: " + err.Error())
-	// }
 
 	// Override the gov ModuleBasic with all the custom proposal handers, otherwise we lose them in the CLI.
 	app.ModuleBasics = module.NewBasicManagerFromManager(

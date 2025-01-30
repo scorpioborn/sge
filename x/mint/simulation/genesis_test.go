@@ -21,7 +21,7 @@ import (
 var params = types.Params{
 	MintDenom:     "usge",
 	BlocksPerYear: 100,
-	Phases:        types.DefaultGenesis().Params.Phases,
+	Phases:        types.DefaultGenesisState().Params.Phases,
 }
 
 // TestRandomizedGenState tests the normal scenario of applying RandomizedGenState.

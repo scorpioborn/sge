@@ -7,7 +7,9 @@ import (
 	"testing"
 
 	"cosmossdk.io/core/appmodule"
-	"github.com/CosmWasm/wasmd/x/wasm/exported"
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/depinject"
+
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -15,7 +17,11 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
+	modulev1 "github.com/sge-network/sge/api/sgenetwork/sge/mint/module/v1"
+	"github.com/sge-network/sge/x/mint/exported"
 	"github.com/sge-network/sge/x/mint/keeper"
 	"github.com/sge-network/sge/x/mint/types"
 )
@@ -92,7 +98,6 @@ type AppModule struct {
 
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
 
 	// legacySubspace is used solely for migration of x/params managed parameters
 	legacySubspace exported.Subspace
@@ -103,14 +108,12 @@ func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper,
 	ss exported.Subspace,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
-		bankKeeper:     bankKeeper,
 		legacySubspace: ss,
 	}
 }
@@ -159,4 +162,65 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 // BeginBlock returns the begin blocker for the mint module.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	return BeginBlocker(ctx, am.keeper)
+}
+
+//
+// App Wiring Setup
+//
+
+func init() {
+	appmodule.Register(&modulev1.Module{},
+		appmodule.Provide(ProvideModule),
+	)
+}
+
+type ModuleInputs struct {
+	depinject.In
+
+	ModuleKey    depinject.OwnModuleKey
+	Config       *modulev1.Module
+	StoreService store.KVStoreService
+	Cdc          codec.Codec
+
+	// LegacySubspace is used solely for migration of x/params managed parameters
+	LegacySubspace exported.Subspace `optional:"true"`
+
+	AccountKeeper types.AccountKeeper
+	BankKeeper    types.BankKeeper
+	StakingKeeper types.StakingKeeper
+}
+
+type ModuleOutputs struct {
+	depinject.Out
+
+	MintKeeper keeper.Keeper
+	Module     appmodule.AppModule
+}
+
+func ProvideModule(in ModuleInputs) ModuleOutputs {
+	feeCollectorName := in.Config.FeeCollectorName
+	if feeCollectorName == "" {
+		feeCollectorName = authtypes.FeeCollectorName
+	}
+
+	// default to governance authority if not provided
+	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
+	if in.Config.Authority != "" {
+		authority = authtypes.NewModuleAddressOrBech32Address(in.Config.Authority)
+	}
+
+	k := keeper.NewKeeper(
+		in.Cdc,
+		in.StoreService,
+		in.StakingKeeper,
+		in.AccountKeeper,
+		in.BankKeeper,
+		feeCollectorName,
+		authority.String(),
+	)
+
+	// when no inflation calculation function is provided it will use the default types.DefaultInflationCalculationFn
+	m := NewAppModule(in.Cdc, k, in.AccountKeeper, in.LegacySubspace)
+
+	return ModuleOutputs{MintKeeper: k, Module: m}
 }

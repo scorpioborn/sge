@@ -52,7 +52,7 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 		}
 	}()
 
-	sApp := app.NewSgeApp(
+	sApp, err := app.NewSgeApp(
 		logger,
 		db,
 		nil,
@@ -65,6 +65,9 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 		[]wasmkeeper.Option{},
 		interBlockCacheOpt(),
 	)
+	if err != nil {
+		b.Fatal(err)
+	}
 
 	// Run randomized simulation:w
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -131,7 +134,7 @@ func TestAppStateDeterminism(t *testing.T) {
 			}
 
 			db := dbm.NewMemDB()
-			sApp := app.NewSgeApp(
+			sApp, err := app.NewSgeApp(
 				logger,
 				db,
 				nil,
@@ -145,12 +148,14 @@ func TestAppStateDeterminism(t *testing.T) {
 				interBlockCacheOpt(),
 			)
 
+			require.NoError(t, err)
+
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",
 				config.Seed, i+1, numSeeds, j+1, numTimesToRunPerSeed,
 			)
 
-			_, _, err := simulation.SimulateFromSeed(
+			_, _, err = simulation.SimulateFromSeed(
 				t,
 				os.Stdout,
 				sApp.BaseApp,

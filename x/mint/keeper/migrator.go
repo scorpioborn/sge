@@ -2,8 +2,8 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/mint/exported"
-	v2 "github.com/cosmos/cosmos-sdk/x/mint/migrations/v2"
+	"github.com/sge-network/sge/x/mint/exported"
+	v2 "github.com/sge-network/sge/x/mint/migrations/v2"
 )
 
 // Migrator is a struct for handling in-place state migrations.

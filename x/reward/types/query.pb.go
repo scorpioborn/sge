@@ -1506,6 +1506,7 @@ func _Query_RewardsByCampaign_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sgenetwork.sge.reward.Query",
 	HandlerType: (*QueryServer)(nil),

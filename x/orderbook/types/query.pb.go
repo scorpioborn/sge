@@ -1920,6 +1920,7 @@ func _Query_SettledOrderBookParticipationsOfHeight_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sgenetwork.sge.orderbook.Query",
 	HandlerType: (*QueryServer)(nil),

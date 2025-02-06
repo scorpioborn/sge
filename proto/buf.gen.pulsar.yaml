@@ -7,7 +7,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: sge/api
+    default: github.com/sge-network/sge/api
     except:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto

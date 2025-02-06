@@ -14,7 +14,7 @@ func TestMinterQuery(t *testing.T) {
 	k, ctx := setupKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
 	params := types.DefaultParams()
-	k.SetParams(ctx, params)
+	k.Params.Set(ctx, params)
 
 	inflation, err := k.Inflation(wctx, &types.QueryInflationRequest{})
 	require.NoError(t, err)

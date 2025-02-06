@@ -20,7 +20,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	modulev1 "github.com/sge-network/sge/api/sgenetwork/sge/mint/module/v1"
+	mintmodulev1 "github.com/sge-network/sge/api/sge/mint/module/v1"
 	"github.com/sge-network/sge/x/mint/exported"
 	"github.com/sge-network/sge/x/mint/keeper"
 	"github.com/sge-network/sge/x/mint/types"
@@ -169,7 +169,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 //
 
 func init() {
-	appmodule.Register(&modulev1.Module{},
+	appmodule.Register(&mintmodulev1.Module{},
 		appmodule.Provide(ProvideModule),
 	)
 }
@@ -178,7 +178,7 @@ type ModuleInputs struct {
 	depinject.In
 
 	ModuleKey    depinject.OwnModuleKey
-	Config       *modulev1.Module
+	Config       *mintmodulev1.Module
 	StoreService store.KVStoreService
 	Cdc          codec.Codec
 

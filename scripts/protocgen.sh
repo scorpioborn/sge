@@ -11,7 +11,7 @@ set -e
 
 echo "Generating gogo proto code"
 cd proto
-proto_dirs=$(find ./sgenetwork -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+proto_dirs=$(find ./sge -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 for dir in $proto_dirs; do
   for file in $(find "${dir}" -maxdepth 1 -name '*.proto'); do
     # this regex checks if a proto file has its go_package set to cosmossdk.io/api/...
@@ -27,11 +27,21 @@ cd ..
 
 
 # move proto files to the right places
+# mkdir -p github.com/sge-network/sge/x/legacy
+# mv github.com/sge-network/sge/x/bet github.com/sge-network/sge/x/legacy/bet
+# mv github.com/sge-network/sge/x/house github.com/sge-network/sge/x/legacy/house
+# mv github.com/sge-network/sge/x/market github.com/sge-network/sge/x/legacy/market
+# mv github.com/sge-network/sge/x/orderbook github.com/sge-network/sge/x/legacy/orderbook
+# mv github.com/sge-network/sge/x/ovm github.com/sge-network/sge/x/legacy/ovm
+# mv github.com/sge-network/sge/x/reward github.com/sge-network/sge/x/legacy/reward
+# mv github.com/sge-network/sge/x/subaccount github.com/sge-network/sge/x/legacy/subaccount
+
+
 cp -r ./github.com/sge-network/sge/x/* x/
 cp -r ./github.com/sge-network/sge/types/* types/
 
 rm -rf ./github.com
 
-go mod tidy
+# # go mod tidy
 
 ./scripts/protocgen-pulsar.sh

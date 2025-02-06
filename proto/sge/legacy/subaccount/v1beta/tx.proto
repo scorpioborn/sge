@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.subaccount;
+package sge.legacy.subaccount.v1beta;
 
 import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";
@@ -114,26 +114,28 @@ message MsgWager {
 
 // MsgWagerResponse wraps the MsgWagerResponse message. We need it in order not
 // to have double interface registration conflicts.
-message MsgWagerResponse { sge.legacy.bet.MsgWagerResponse response = 1; }
+message MsgWagerResponse {
+  sge.legacy.bet.v1beta.MsgWagerResponse response = 1;
+}
 
 // MsgHouseDeposit wraps the MsgHouseDeposit message. We need it in order not to
 // have double interface registration conflicts.
-message MsgHouseDeposit { sge.legacy.house.MsgDeposit msg = 1; }
+message MsgHouseDeposit { sge.legacy.house.v1beta.MsgDeposit msg = 1; }
 
 // MsgHouseDepositResponse wraps the MsgHouseDepositResponse message. We need it
 // in order not to have double interface registration conflicts.
 message MsgHouseDepositResponse {
-  sge.legacy.house.MsgDepositResponse response = 1;
+  sge.legacy.house.v1beta.MsgDepositResponse response = 1;
 }
 
 // MsgHouseWithdraw wraps the MsgHouseWithdraw message. We need it in order not
 // to have double interface registration conflicts.
-message MsgHouseWithdraw { sge.legacy.house.MsgWithdraw msg = 1; }
+message MsgHouseWithdraw { sge.legacy.house.v1beta.MsgWithdraw msg = 1; }
 
 // MsgHouseWithdrawResponse wraps the MsgHouseWithdrawResponse message. We need
 // it in order not to have double interface registration conflicts.
 message MsgHouseWithdrawResponse {
-  sge.legacy.house.MsgWithdrawResponse response = 1;
+  sge.legacy.house.v1beta.MsgWithdrawResponse response = 1;
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.

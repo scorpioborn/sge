@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/reward/v1beta/tx.proto
 
-package v1beta
+package rewardv1beta
 
 import (
 	context "context"
@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_SetPromoterConf_FullMethodName = "/sge.legacy.reward.Msg/SetPromoterConf"
-	Msg_CreatePromoter_FullMethodName  = "/sge.legacy.reward.Msg/CreatePromoter"
-	Msg_CreateCampaign_FullMethodName  = "/sge.legacy.reward.Msg/CreateCampaign"
-	Msg_UpdateCampaign_FullMethodName  = "/sge.legacy.reward.Msg/UpdateCampaign"
-	Msg_WithdrawFunds_FullMethodName   = "/sge.legacy.reward.Msg/WithdrawFunds"
-	Msg_GrantReward_FullMethodName     = "/sge.legacy.reward.Msg/GrantReward"
-	Msg_UpdateParams_FullMethodName    = "/sge.legacy.reward.Msg/UpdateParams"
+	Msg_SetPromoterConf_FullMethodName = "/sge.legacy.reward.v1beta.Msg/SetPromoterConf"
+	Msg_CreatePromoter_FullMethodName  = "/sge.legacy.reward.v1beta.Msg/CreatePromoter"
+	Msg_CreateCampaign_FullMethodName  = "/sge.legacy.reward.v1beta.Msg/CreateCampaign"
+	Msg_UpdateCampaign_FullMethodName  = "/sge.legacy.reward.v1beta.Msg/UpdateCampaign"
+	Msg_WithdrawFunds_FullMethodName   = "/sge.legacy.reward.v1beta.Msg/WithdrawFunds"
+	Msg_GrantReward_FullMethodName     = "/sge.legacy.reward.v1beta.Msg/GrantReward"
+	Msg_UpdateParams_FullMethodName    = "/sge.legacy.reward.v1beta.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -353,7 +353,7 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.reward.Msg",
+	ServiceName: "sge.legacy.reward.v1beta.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

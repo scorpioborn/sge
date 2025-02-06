@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sge.legacy.reward;
+package sge.legacy.reward.v1beta;
 
 import "gogoproto/gogo.proto";
 import "sge/legacy/reward/v1beta/campaign.proto";

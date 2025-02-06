@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/ovm/v1beta/tx.proto
 
-package v1beta
+package ovmv1beta
 
 import (
 	context "context"
@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_SubmitPubkeysChangeProposal_FullMethodName = "/sge.legacy.ovm.Msg/SubmitPubkeysChangeProposal"
-	Msg_VotePubkeysChange_FullMethodName           = "/sge.legacy.ovm.Msg/VotePubkeysChange"
-	Msg_UpdateParams_FullMethodName                = "/sge.legacy.ovm.Msg/UpdateParams"
+	Msg_SubmitPubkeysChangeProposal_FullMethodName = "/sge.legacy.ovm.v1beta.Msg/SubmitPubkeysChangeProposal"
+	Msg_VotePubkeysChange_FullMethodName           = "/sge.legacy.ovm.v1beta.Msg/VotePubkeysChange"
+	Msg_UpdateParams_FullMethodName                = "/sge.legacy.ovm.v1beta.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -201,7 +201,7 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.ovm.Msg",
+	ServiceName: "sge.legacy.ovm.v1beta.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

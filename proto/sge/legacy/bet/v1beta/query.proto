@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.bet;
+package sge.legacy.bet.v1beta;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "cosmos_proto/cosmos.proto";
@@ -73,7 +73,7 @@ message QueryBetRequest {
 // Query/Bet RPC method.
 message QueryBetResponse {
   Bet bet = 1 [ (gogoproto.nullable) = false ];
-  sge.legacy.market.Market market = 2 [ (gogoproto.nullable) = false ];
+  sge.legacy.market.v1beta.Market market = 2 [ (gogoproto.nullable) = false ];
 }
 
 // QueryBetsRequest is the request type for the bets list query

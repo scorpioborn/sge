@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/bet/v1beta/query.proto
 
-package v1beta
+package betv1beta
 
 import (
 	context "context"
@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName              = "/sge.legacy.bet.Query/Params"
-	Query_Bet_FullMethodName                 = "/sge.legacy.bet.Query/Bet"
-	Query_BetsByCreator_FullMethodName       = "/sge.legacy.bet.Query/BetsByCreator"
-	Query_Bets_FullMethodName                = "/sge.legacy.bet.Query/Bets"
-	Query_PendingBets_FullMethodName         = "/sge.legacy.bet.Query/PendingBets"
-	Query_SettledBetsOfHeight_FullMethodName = "/sge.legacy.bet.Query/SettledBetsOfHeight"
-	Query_BetsByUIDs_FullMethodName          = "/sge.legacy.bet.Query/BetsByUIDs"
+	Query_Params_FullMethodName              = "/sge.legacy.bet.v1beta.Query/Params"
+	Query_Bet_FullMethodName                 = "/sge.legacy.bet.v1beta.Query/Bet"
+	Query_BetsByCreator_FullMethodName       = "/sge.legacy.bet.v1beta.Query/BetsByCreator"
+	Query_Bets_FullMethodName                = "/sge.legacy.bet.v1beta.Query/Bets"
+	Query_PendingBets_FullMethodName         = "/sge.legacy.bet.v1beta.Query/PendingBets"
+	Query_SettledBetsOfHeight_FullMethodName = "/sge.legacy.bet.v1beta.Query/SettledBetsOfHeight"
+	Query_BetsByUIDs_FullMethodName          = "/sge.legacy.bet.v1beta.Query/BetsByUIDs"
 )
 
 // QueryClient is the client API for Query service.
@@ -330,7 +330,7 @@ func _Query_BetsByUIDs_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.bet.Query",
+	ServiceName: "sge.legacy.bet.v1beta.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

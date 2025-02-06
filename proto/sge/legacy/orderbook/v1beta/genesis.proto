@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.orderbook;
+package sge.legacy.orderbook.v1beta;
 
 import "gogoproto/gogo.proto";
 import "sge/legacy/orderbook/v1beta/exposure.proto";

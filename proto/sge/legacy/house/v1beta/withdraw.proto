@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.house;
+package sge.legacy.house.v1beta;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";

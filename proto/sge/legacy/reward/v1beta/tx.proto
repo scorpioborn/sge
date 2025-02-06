@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sge.legacy.reward;
+package sge.legacy.reward.v1beta;
 
 import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";

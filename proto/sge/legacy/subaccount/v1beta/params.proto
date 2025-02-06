@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.subaccount;
+package sge.legacy.subaccount.v1beta;
 
 import "gogoproto/gogo.proto";
 

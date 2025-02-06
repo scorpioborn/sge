@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/market/v1beta/query.proto
 
-package v1beta
+package marketv1beta
 
 import (
 	context "context"
@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName        = "/sge.legacy.market.Query/Params"
-	Query_Market_FullMethodName        = "/sge.legacy.market.Query/Market"
-	Query_Markets_FullMethodName       = "/sge.legacy.market.Query/Markets"
-	Query_MarketsByUIDs_FullMethodName = "/sge.legacy.market.Query/MarketsByUIDs"
+	Query_Params_FullMethodName        = "/sge.legacy.market.v1beta.Query/Params"
+	Query_Market_FullMethodName        = "/sge.legacy.market.v1beta.Query/Market"
+	Query_Markets_FullMethodName       = "/sge.legacy.market.v1beta.Query/Markets"
+	Query_MarketsByUIDs_FullMethodName = "/sge.legacy.market.v1beta.Query/MarketsByUIDs"
 )
 
 // QueryClient is the client API for Query service.
@@ -222,7 +222,7 @@ func _Query_MarketsByUIDs_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.market.Query",
+	ServiceName: "sge.legacy.market.v1beta.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

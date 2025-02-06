@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/ovm/v1beta/query.proto
 
-package v1beta
+package ovmv1beta
 
 import (
 	context "context"
@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName                    = "/sge.legacy.ovm.Query/Params"
-	Query_PubKeys_FullMethodName                   = "/sge.legacy.ovm.Query/PubKeys"
-	Query_PublicKeysChangeProposal_FullMethodName  = "/sge.legacy.ovm.Query/PublicKeysChangeProposal"
-	Query_PublicKeysChangeProposals_FullMethodName = "/sge.legacy.ovm.Query/PublicKeysChangeProposals"
+	Query_Params_FullMethodName                    = "/sge.legacy.ovm.v1beta.Query/Params"
+	Query_PubKeys_FullMethodName                   = "/sge.legacy.ovm.v1beta.Query/PubKeys"
+	Query_PublicKeysChangeProposal_FullMethodName  = "/sge.legacy.ovm.v1beta.Query/PublicKeysChangeProposal"
+	Query_PublicKeysChangeProposals_FullMethodName = "/sge.legacy.ovm.v1beta.Query/PublicKeysChangeProposals"
 )
 
 // QueryClient is the client API for Query service.
@@ -222,7 +222,7 @@ func _Query_PublicKeysChangeProposals_Handler(srv interface{}, ctx context.Conte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.ovm.Query",
+	ServiceName: "sge.legacy.ovm.v1beta.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

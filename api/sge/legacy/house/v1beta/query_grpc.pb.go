@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/house/v1beta/query.proto
 
-package v1beta
+package housev1beta
 
 import (
 	context "context"
@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName               = "/sge.legacy.house.Query/Params"
-	Query_Deposits_FullMethodName             = "/sge.legacy.house.Query/Deposits"
-	Query_DepositsByAccount_FullMethodName    = "/sge.legacy.house.Query/DepositsByAccount"
-	Query_WithdrawalsByAccount_FullMethodName = "/sge.legacy.house.Query/WithdrawalsByAccount"
-	Query_Withdrawal_FullMethodName           = "/sge.legacy.house.Query/Withdrawal"
+	Query_Params_FullMethodName               = "/sge.legacy.house.v1beta.Query/Params"
+	Query_Deposits_FullMethodName             = "/sge.legacy.house.v1beta.Query/Deposits"
+	Query_DepositsByAccount_FullMethodName    = "/sge.legacy.house.v1beta.Query/DepositsByAccount"
+	Query_WithdrawalsByAccount_FullMethodName = "/sge.legacy.house.v1beta.Query/WithdrawalsByAccount"
+	Query_Withdrawal_FullMethodName           = "/sge.legacy.house.v1beta.Query/Withdrawal"
 )
 
 // QueryClient is the client API for Query service.
@@ -258,7 +258,7 @@ func _Query_Withdrawal_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.house.Query",
+	ServiceName: "sge.legacy.house.v1beta.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

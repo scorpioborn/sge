@@ -27,21 +27,11 @@ cd ..
 
 
 # move proto files to the right places
-# mkdir -p github.com/sge-network/sge/x/legacy
-# mv github.com/sge-network/sge/x/bet github.com/sge-network/sge/x/legacy/bet
-# mv github.com/sge-network/sge/x/house github.com/sge-network/sge/x/legacy/house
-# mv github.com/sge-network/sge/x/market github.com/sge-network/sge/x/legacy/market
-# mv github.com/sge-network/sge/x/orderbook github.com/sge-network/sge/x/legacy/orderbook
-# mv github.com/sge-network/sge/x/ovm github.com/sge-network/sge/x/legacy/ovm
-# mv github.com/sge-network/sge/x/reward github.com/sge-network/sge/x/legacy/reward
-# mv github.com/sge-network/sge/x/subaccount github.com/sge-network/sge/x/legacy/subaccount
-
-
 cp -r ./github.com/sge-network/sge/x/* x/
 cp -r ./github.com/sge-network/sge/types/* types/
 
 rm -rf ./github.com
 
-# # go mod tidy
+go mod tidy
 
 ./scripts/protocgen-pulsar.sh

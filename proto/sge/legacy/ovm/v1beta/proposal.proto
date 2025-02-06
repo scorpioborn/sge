@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.ovm;
+package sge.legacy.ovm.v1beta;
 
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.bet;
+package sge.legacy.bet.v1beta;
 
 import "gogoproto/gogo.proto";
 import "sge/legacy/bet/v1beta/bet.proto";
@@ -13,7 +13,8 @@ message WagerTicketPayload {
   // selected_odds is the user-selected odds to place bet.
   BetOdds selected_odds = 1;
   // kyc_data contains the details of user kyc.
-  sge.legacy.type.KycDataPayload kyc_data = 2 [ (gogoproto.nullable) = false ];
+  sge.legacy.type.v1beta.KycDataPayload kyc_data = 2
+      [ (gogoproto.nullable) = false ];
   // all odds for the selected market.
   repeated BetOddsCompact all_odds = 4;
   // meta is metadata for bet placement

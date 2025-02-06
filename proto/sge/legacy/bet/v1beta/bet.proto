@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.bet;
+package sge.legacy.bet.v1beta;
 
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
@@ -178,7 +178,7 @@ message BetFulfillment {
 // metadata for bet
 message MetaData {
   // selected_odds_type is metadata for bet
-  sge.legacy.bet.OddsType selected_odds_type = 1;
+  sge.legacy.bet.v1beta.OddsType selected_odds_type = 1;
   // selected_odds_value is metadata for bet
   string selected_odds_value = 2;
   // is_main_market will tell weather the bet placed on the main market or not

@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/subaccount/v1beta/tx.proto
 
-package v1beta
+package subaccountv1beta
 
 import (
 	context "context"
@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_Create_FullMethodName                   = "/sge.legacy.subaccount.Msg/Create"
-	Msg_TopUp_FullMethodName                    = "/sge.legacy.subaccount.Msg/TopUp"
-	Msg_WithdrawUnlockedBalances_FullMethodName = "/sge.legacy.subaccount.Msg/WithdrawUnlockedBalances"
-	Msg_Wager_FullMethodName                    = "/sge.legacy.subaccount.Msg/Wager"
-	Msg_HouseDeposit_FullMethodName             = "/sge.legacy.subaccount.Msg/HouseDeposit"
-	Msg_HouseWithdraw_FullMethodName            = "/sge.legacy.subaccount.Msg/HouseWithdraw"
-	Msg_UpdateParams_FullMethodName             = "/sge.legacy.subaccount.Msg/UpdateParams"
+	Msg_Create_FullMethodName                   = "/sge.legacy.subaccount.v1beta.Msg/Create"
+	Msg_TopUp_FullMethodName                    = "/sge.legacy.subaccount.v1beta.Msg/TopUp"
+	Msg_WithdrawUnlockedBalances_FullMethodName = "/sge.legacy.subaccount.v1beta.Msg/WithdrawUnlockedBalances"
+	Msg_Wager_FullMethodName                    = "/sge.legacy.subaccount.v1beta.Msg/Wager"
+	Msg_HouseDeposit_FullMethodName             = "/sge.legacy.subaccount.v1beta.Msg/HouseDeposit"
+	Msg_HouseWithdraw_FullMethodName            = "/sge.legacy.subaccount.v1beta.Msg/HouseWithdraw"
+	Msg_UpdateParams_FullMethodName             = "/sge.legacy.subaccount.v1beta.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -357,7 +357,7 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.subaccount.Msg",
+	ServiceName: "sge.legacy.subaccount.v1beta.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

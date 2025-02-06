@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.type;
+package sge.legacy.type.v1beta;
 
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";

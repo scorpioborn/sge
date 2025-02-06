@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.subaccount;
+package sge.legacy.subaccount.v1beta;
 
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
@@ -26,7 +26,8 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is the response type for the Query/Params RPC method
 message QueryParamsResponse {
-  sge.legacy.subaccount.Params params = 1 [ (gogoproto.nullable) = false ];
+  sge.legacy.subaccount.v1beta.Params params = 1
+      [ (gogoproto.nullable) = false ];
 }
 
 // QuerySubaccountRequest is the request type for the Query/Subaccount RPC
@@ -35,11 +36,11 @@ message QuerySubaccountRequest { string address = 1; }
 // QuerySubaccountResponse is the response type for the Query/Subaccount RPC
 message QuerySubaccountResponse {
   string address = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-  sge.legacy.subaccount.AccountSummary balance = 2
+  sge.legacy.subaccount.v1beta.AccountSummary balance = 2
       [ (gogoproto.nullable) = false ];
-  repeated sge.legacy.subaccount.LockedBalance locked_balance = 3
+  repeated sge.legacy.subaccount.v1beta.LockedBalance locked_balance = 3
       [ (gogoproto.nullable) = false ];
-  repeated sge.legacy.subaccount.LockedBalance unlocked_balance = 4
+  repeated sge.legacy.subaccount.v1beta.LockedBalance unlocked_balance = 4
       [ (gogoproto.nullable) = false ];
   string withdrawable_unlocked_balance = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",

@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/house/v1beta/tx.proto
 
-package v1beta
+package housev1beta
 
 import (
 	context "context"
@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_Deposit_FullMethodName      = "/sge.legacy.house.Msg/Deposit"
-	Msg_Withdraw_FullMethodName     = "/sge.legacy.house.Msg/Withdraw"
-	Msg_UpdateParams_FullMethodName = "/sge.legacy.house.Msg/UpdateParams"
+	Msg_Deposit_FullMethodName      = "/sge.legacy.house.v1beta.Msg/Deposit"
+	Msg_Withdraw_FullMethodName     = "/sge.legacy.house.v1beta.Msg/Withdraw"
+	Msg_UpdateParams_FullMethodName = "/sge.legacy.house.v1beta.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -203,7 +203,7 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.house.Msg",
+	ServiceName: "sge.legacy.house.v1beta.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

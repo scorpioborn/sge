@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.market;
+package sge.legacy.market.v1beta;
 
 import "gogoproto/gogo.proto";
 

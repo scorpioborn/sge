@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/orderbook/v1beta/query.proto
 
-package v1beta
+package orderbookv1beta
 
 import (
 	context "context"
@@ -19,18 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName                                 = "/sge.legacy.orderbook.Query/Params"
-	Query_OrderBooks_FullMethodName                             = "/sge.legacy.orderbook.Query/OrderBooks"
-	Query_OrderBook_FullMethodName                              = "/sge.legacy.orderbook.Query/OrderBook"
-	Query_OrderBookParticipations_FullMethodName                = "/sge.legacy.orderbook.Query/OrderBookParticipations"
-	Query_OrderBookParticipation_FullMethodName                 = "/sge.legacy.orderbook.Query/OrderBookParticipation"
-	Query_OrderBookExposures_FullMethodName                     = "/sge.legacy.orderbook.Query/OrderBookExposures"
-	Query_OrderBookExposure_FullMethodName                      = "/sge.legacy.orderbook.Query/OrderBookExposure"
-	Query_OrderBookParticipationExposures_FullMethodName        = "/sge.legacy.orderbook.Query/OrderBookParticipationExposures"
-	Query_ParticipationExposures_FullMethodName                 = "/sge.legacy.orderbook.Query/ParticipationExposures"
-	Query_HistoricalParticipationExposures_FullMethodName       = "/sge.legacy.orderbook.Query/HistoricalParticipationExposures"
-	Query_ParticipationFulfilledBets_FullMethodName             = "/sge.legacy.orderbook.Query/ParticipationFulfilledBets"
-	Query_SettledOrderBookParticipationsOfHeight_FullMethodName = "/sge.legacy.orderbook.Query/SettledOrderBookParticipationsOfHeight"
+	Query_Params_FullMethodName                                 = "/sge.legacy.orderbook.v1beta.Query/Params"
+	Query_OrderBooks_FullMethodName                             = "/sge.legacy.orderbook.v1beta.Query/OrderBooks"
+	Query_OrderBook_FullMethodName                              = "/sge.legacy.orderbook.v1beta.Query/OrderBook"
+	Query_OrderBookParticipations_FullMethodName                = "/sge.legacy.orderbook.v1beta.Query/OrderBookParticipations"
+	Query_OrderBookParticipation_FullMethodName                 = "/sge.legacy.orderbook.v1beta.Query/OrderBookParticipation"
+	Query_OrderBookExposures_FullMethodName                     = "/sge.legacy.orderbook.v1beta.Query/OrderBookExposures"
+	Query_OrderBookExposure_FullMethodName                      = "/sge.legacy.orderbook.v1beta.Query/OrderBookExposure"
+	Query_OrderBookParticipationExposures_FullMethodName        = "/sge.legacy.orderbook.v1beta.Query/OrderBookParticipationExposures"
+	Query_ParticipationExposures_FullMethodName                 = "/sge.legacy.orderbook.v1beta.Query/ParticipationExposures"
+	Query_HistoricalParticipationExposures_FullMethodName       = "/sge.legacy.orderbook.v1beta.Query/HistoricalParticipationExposures"
+	Query_ParticipationFulfilledBets_FullMethodName             = "/sge.legacy.orderbook.v1beta.Query/ParticipationFulfilledBets"
+	Query_SettledOrderBookParticipationsOfHeight_FullMethodName = "/sge.legacy.orderbook.v1beta.Query/SettledOrderBookParticipationsOfHeight"
 )
 
 // QueryClient is the client API for Query service.
@@ -524,7 +524,7 @@ func _Query_SettledOrderBookParticipationsOfHeight_Handler(srv interface{}, ctx 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.orderbook.Query",
+	ServiceName: "sge.legacy.orderbook.v1beta.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

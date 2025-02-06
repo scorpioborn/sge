@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/bet/v1beta/tx.proto
 
-package v1beta
+package betv1beta
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_Wager_FullMethodName        = "/sge.legacy.bet.Msg/Wager"
-	Msg_UpdateParams_FullMethodName = "/sge.legacy.bet.Msg/UpdateParams"
+	Msg_Wager_FullMethodName        = "/sge.legacy.bet.v1beta.Msg/Wager"
+	Msg_UpdateParams_FullMethodName = "/sge.legacy.bet.v1beta.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -158,7 +158,7 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.bet.Msg",
+	ServiceName: "sge.legacy.bet.v1beta.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

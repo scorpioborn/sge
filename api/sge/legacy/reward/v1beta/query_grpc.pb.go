@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/reward/v1beta/query.proto
 
-package v1beta
+package rewardv1beta
 
 import (
 	context "context"
@@ -19,16 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Params_FullMethodName                      = "/sge.legacy.reward.Query/Params"
-	Query_PromoterByAddress_FullMethodName           = "/sge.legacy.reward.Query/PromoterByAddress"
-	Query_Promoters_FullMethodName                   = "/sge.legacy.reward.Query/Promoters"
-	Query_Campaign_FullMethodName                    = "/sge.legacy.reward.Query/Campaign"
-	Query_Campaigns_FullMethodName                   = "/sge.legacy.reward.Query/Campaigns"
-	Query_Reward_FullMethodName                      = "/sge.legacy.reward.Query/Reward"
-	Query_Rewards_FullMethodName                     = "/sge.legacy.reward.Query/Rewards"
-	Query_RewardsByAddress_FullMethodName            = "/sge.legacy.reward.Query/RewardsByAddress"
-	Query_RewardsByAddressAndCategory_FullMethodName = "/sge.legacy.reward.Query/RewardsByAddressAndCategory"
-	Query_RewardsByCampaign_FullMethodName           = "/sge.legacy.reward.Query/RewardsByCampaign"
+	Query_Params_FullMethodName                      = "/sge.legacy.reward.v1beta.Query/Params"
+	Query_PromoterByAddress_FullMethodName           = "/sge.legacy.reward.v1beta.Query/PromoterByAddress"
+	Query_Promoters_FullMethodName                   = "/sge.legacy.reward.v1beta.Query/Promoters"
+	Query_Campaign_FullMethodName                    = "/sge.legacy.reward.v1beta.Query/Campaign"
+	Query_Campaigns_FullMethodName                   = "/sge.legacy.reward.v1beta.Query/Campaigns"
+	Query_Reward_FullMethodName                      = "/sge.legacy.reward.v1beta.Query/Reward"
+	Query_Rewards_FullMethodName                     = "/sge.legacy.reward.v1beta.Query/Rewards"
+	Query_RewardsByAddress_FullMethodName            = "/sge.legacy.reward.v1beta.Query/RewardsByAddress"
+	Query_RewardsByAddressAndCategory_FullMethodName = "/sge.legacy.reward.v1beta.Query/RewardsByAddressAndCategory"
+	Query_RewardsByCampaign_FullMethodName           = "/sge.legacy.reward.v1beta.Query/RewardsByCampaign"
 )
 
 // QueryClient is the client API for Query service.
@@ -440,7 +440,7 @@ func _Query_RewardsByCampaign_Handler(srv interface{}, ctx context.Context, dec 
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.reward.Query",
+	ServiceName: "sge.legacy.reward.v1beta.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

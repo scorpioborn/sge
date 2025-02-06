@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.ovm;
+package sge.legacy.ovm.v1beta;
 
 import "gogoproto/gogo.proto";
 import "sge/legacy/ovm/v1beta/key_vault.proto";

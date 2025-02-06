@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.market;
+package sge.legacy.market.v1beta;
 
 import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";

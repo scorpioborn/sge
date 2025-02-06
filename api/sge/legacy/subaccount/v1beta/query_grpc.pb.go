@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: sge/legacy/subaccount/v1beta/query.proto
 
-package v1beta
+package subaccountv1beta
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Query_Subaccount_FullMethodName = "/sge.legacy.subaccount.Query/Subaccount"
-	Query_Params_FullMethodName     = "/sge.legacy.subaccount.Query/Params"
+	Query_Subaccount_FullMethodName = "/sge.legacy.subaccount.v1beta.Query/Subaccount"
+	Query_Params_FullMethodName     = "/sge.legacy.subaccount.v1beta.Query/Params"
 )
 
 // QueryClient is the client API for Query service.
@@ -150,7 +150,7 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sge.legacy.subaccount.Query",
+	ServiceName: "sge.legacy.subaccount.v1beta.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

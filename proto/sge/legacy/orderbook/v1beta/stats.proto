@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.orderbook;
+package sge.legacy.orderbook.v1beta;
 
 option go_package = "github.com/sge-network/sge/x/legacy/orderbook/types";
 

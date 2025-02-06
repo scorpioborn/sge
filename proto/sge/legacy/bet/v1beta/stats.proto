@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sge.legacy.bet;
+package sge.legacy.bet.v1beta;
 
 option go_package = "github.com/sge-network/sge/x/legacy/bet/types";
 

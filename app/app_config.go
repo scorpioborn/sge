@@ -166,7 +166,7 @@ var (
 			{
 				Name: runtime.ModuleName,
 				Config: appconfig.WrapAny(&runtimev1alpha1.Module{
-					AppName:       AppName,
+					AppName:       Name,
 					PreBlockers:   preBlockers,
 					BeginBlockers: beginBlockers,
 					EndBlockers:   endBlockers,

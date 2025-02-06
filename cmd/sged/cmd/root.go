@@ -48,7 +48,7 @@ func NewRootCmd() *cobra.Command {
 	}
 
 	rootCmd := &cobra.Command{
-		Use:           app.AppName + "d",
+		Use:           app.Name + "d",
 		Short:         "Start sge node",
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
@@ -90,7 +90,7 @@ func NewRootCmd() *cobra.Command {
 	initRootCmd(rootCmd, clientCtx.TxConfig, moduleBasicManager)
 
 	overwriteFlagDefaults(rootCmd, map[string]string{
-		flags.FlagChainID:        strings.ReplaceAll(app.AppName, "-", ""),
+		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
 	})
 
@@ -130,7 +130,7 @@ func ProvideClientContext(
 		WithInput(os.Stdin).
 		WithAccountRetriever(types.AccountRetriever{}).
 		WithHomeDir(app.DefaultNodeHome).
-		WithViper(app.AppName) // env variable prefix
+		WithViper(app.Name) // env variable prefix
 
 	// Read the config again to overwrite the default values with the values from the config file
 	clientCtx, _ = config.ReadFromClientConfig(clientCtx)

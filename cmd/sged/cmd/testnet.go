@@ -66,7 +66,7 @@ it enables developers to configure their local environments to reflect mainnet c
 func newTestnetApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts servertypes.AppOptions) servertypes.Application {
 	// Create an app and type cast to an App
 	newApp := newApp(logger, db, traceStore, appOpts)
-	testApp, ok := newApp.(*app.SgeApp)
+	testApp, ok := newApp.(*app.App)
 	if !ok {
 		panic("app created from newApp is not of type App")
 	}
@@ -80,7 +80,7 @@ func newTestnetApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts s
 	return initAppForTestnet(testApp, args)
 }
 
-func initAppForTestnet(app *app.SgeApp, args valArgs) *app.SgeApp {
+func initAppForTestnet(app *app.App, args valArgs) *app.App {
 	// Required Changes:
 	//
 	ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})

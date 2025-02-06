@@ -68,7 +68,7 @@ const (
 	// AccountAddressPrefix prefix used for generating account address
 	AccountAddressPrefix = "sge"
 
-	AppName = "sge"
+	Name = "sge"
 )
 
 var (
@@ -83,8 +83,8 @@ var (
 )
 
 var (
-	_ runtime.AppI            = (*SgeApp)(nil)
-	_ servertypes.Application = (*SgeApp)(nil)
+	_ runtime.AppI            = (*App)(nil)
+	_ servertypes.Application = (*App)(nil)
 )
 
 func init() {
@@ -93,13 +93,13 @@ func init() {
 		panic(err)
 	}
 
-	DefaultNodeHome = filepath.Join(userHomeDir, "."+AppName)
+	DefaultNodeHome = filepath.Join(userHomeDir, "."+Name)
 }
 
-// SgeApp extends an ABCI application, but with most of its parameters exported.
+// App extends an ABCI application, but with most of its parameters exported.
 // They are exported for convenience in creating helper functions, as object
 // capabilities aren't needed for testing.
-type SgeApp struct {
+type App struct {
 	*runtime.App
 	*keepers.AppKeepers
 
@@ -114,8 +114,8 @@ type SgeApp struct {
 
 func init() {
 	var err error
-	clienthelpers.EnvPrefix = AppName
-	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory("." + AppName)
+	clienthelpers.EnvPrefix = Name
+	DefaultNodeHome, err = clienthelpers.GetNodeHomeDirectory("." + Name)
 	if err != nil {
 		panic(err)
 	}
@@ -148,17 +148,17 @@ func AppConfig() depinject.Config {
 	)
 }
 
-// NewSgeApp returns a reference to an initialized Sge.
-func NewSgeApp(
+// NewApp returns a reference to an initialized Sge.
+func NewApp(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) (*SgeApp, error) {
+) (*App, error) {
 	var (
-		app        = &SgeApp{AppKeepers: &keepers.AppKeepers{ScopedKeepers: make(map[string]capabilitykeeper.ScopedKeeper)}}
+		app        = &App{AppKeepers: &keepers.AppKeepers{ScopedKeepers: make(map[string]capabilitykeeper.ScopedKeeper)}}
 		appBuilder *runtime.AppBuilder
 
 		// merge the AppConfig and other configuration in one config
@@ -263,7 +263,7 @@ func NewSgeApp(
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *SgeApp) LegacyAmino() *codec.LegacyAmino {
+func (app *App) LegacyAmino() *codec.LegacyAmino {
 	return app.legacyAmino
 }
 
@@ -271,22 +271,22 @@ func (app *SgeApp) LegacyAmino() *codec.LegacyAmino {
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *SgeApp) AppCodec() codec.Codec {
+func (app *App) AppCodec() codec.Codec {
 	return app.appCodec
 }
 
 // InterfaceRegistry returns App's interfaceRegistry.
-func (app *SgeApp) InterfaceRegistry() codectypes.InterfaceRegistry {
+func (app *App) InterfaceRegistry() codectypes.InterfaceRegistry {
 	return app.interfaceRegistry
 }
 
 // TxConfig returns App's tx config.
-func (app *SgeApp) TxConfig() client.TxConfig {
+func (app *App) TxConfig() client.TxConfig {
 	return app.txConfig
 }
 
 // GetKey returns the KVStoreKey for the provided store key.
-func (app *SgeApp) GetKey(storeKey string) *storetypes.KVStoreKey {
+func (app *App) GetKey(storeKey string) *storetypes.KVStoreKey {
 	kvStoreKey, ok := app.UnsafeFindStoreKey(storeKey).(*storetypes.KVStoreKey)
 	if !ok {
 		return nil
@@ -295,7 +295,7 @@ func (app *SgeApp) GetKey(storeKey string) *storetypes.KVStoreKey {
 }
 
 // GetMemKey returns the MemoryStoreKey for the provided store key.
-func (app *SgeApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
+func (app *App) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
 	key, ok := app.UnsafeFindStoreKey(storeKey).(*storetypes.MemoryStoreKey)
 	if !ok {
 		return nil
@@ -305,7 +305,7 @@ func (app *SgeApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
 }
 
 // kvStoreKeys returns all the kv store keys registered inside App.
-func (app *SgeApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {
+func (app *App) kvStoreKeys() map[string]*storetypes.KVStoreKey {
 	keys := make(map[string]*storetypes.KVStoreKey)
 	for _, k := range app.GetStoreKeys() {
 		if kv, ok := k.(*storetypes.KVStoreKey); ok {
@@ -317,18 +317,18 @@ func (app *SgeApp) kvStoreKeys() map[string]*storetypes.KVStoreKey {
 }
 
 // GetSubspace returns a param subspace for a given module name.
-func (app *SgeApp) GetSubspace(moduleName string) paramstypes.Subspace {
+func (app *App) GetSubspace(moduleName string) paramstypes.Subspace {
 	subspace, _ := app.ParamsKeeper.GetSubspace(moduleName)
 	return subspace
 }
 
 // GetIBCKeeper returns the IBC keeper.
-func (app *SgeApp) GetIBCKeeper() *ibckeeper.Keeper {
+func (app *App) GetIBCKeeper() *ibckeeper.Keeper {
 	return app.IBCKeeper
 }
 
 // GetCapabilityScopedKeeper returns the capability scoped keeper.
-func (app *SgeApp) GetCapabilityScopedKeeper(moduleName string) capabilitykeeper.ScopedKeeper {
+func (app *App) GetCapabilityScopedKeeper(moduleName string) capabilitykeeper.ScopedKeeper {
 	sk, ok := app.ScopedKeepers[moduleName]
 	if !ok {
 		sk = app.CapabilityKeeper.ScopeToModule(moduleName)
@@ -338,13 +338,13 @@ func (app *SgeApp) GetCapabilityScopedKeeper(moduleName string) capabilitykeeper
 }
 
 // SimulationManager implements the SimulationApp interface.
-func (app *SgeApp) SimulationManager() *module.SimulationManager {
+func (app *App) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
-func (app *SgeApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
+func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	app.App.RegisterAPIRoutes(apiSvr, apiConfig)
 	// register swagger API in app.go so that other applications can override easily
 	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
@@ -352,7 +352,7 @@ func (app *SgeApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APICon
 	}
 
 	// register app's OpenAPI routes.
-	docs.RegisterOpenAPIService(AppName, apiSvr.Router)
+	docs.RegisterOpenAPIService(Name, apiSvr.Router)
 }
 
 // GetMaccPerms returns a copy of the module account permissions
@@ -382,7 +382,7 @@ func BlockedAddresses() map[string]bool {
 }
 
 // configure store loader that checks if version == upgradeHeight and applies store upgrades
-func (app *SgeApp) setupUpgradeStoreLoaders() {
+func (app *App) setupUpgradeStoreLoaders() {
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
 	if err != nil {
 		panic(fmt.Sprintf("failed to read upgrade info from disk %s", err))
@@ -400,7 +400,7 @@ func (app *SgeApp) setupUpgradeStoreLoaders() {
 	}
 }
 
-func (app *SgeApp) setupUpgradeHandlers() {
+func (app *App) setupUpgradeHandlers() {
 	for _, upgrade := range Upgrades {
 		app.UpgradeKeeper.SetUpgradeHandler(
 			upgrade.UpgradeName,

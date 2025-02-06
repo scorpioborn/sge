@@ -134,7 +134,7 @@ func newApp(
 ) servertypes.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
 
-	app, err := app.NewSgeApp(
+	app, err := app.NewApp(
 		logger, db, traceStore, true,
 		appOpts,
 		baseappOptions...,
@@ -157,7 +157,7 @@ func appExport(
 	modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
 	var (
-		bApp *app.SgeApp
+		bApp *app.App
 		err  error
 	)
 
@@ -178,7 +178,7 @@ func appExport(
 	appOpts = viperAppOpts
 
 	if height != -1 {
-		bApp, err = app.NewSgeApp(logger, db, traceStore, false, appOpts)
+		bApp, err = app.NewApp(logger, db, traceStore, false, appOpts)
 		if err != nil {
 			return servertypes.ExportedApp{}, err
 		}
@@ -187,7 +187,7 @@ func appExport(
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		bApp, err = app.NewSgeApp(logger, db, traceStore, true, appOpts)
+		bApp, err = app.NewApp(logger, db, traceStore, true, appOpts)
 		if err != nil {
 			return servertypes.ExportedApp{}, err
 		}

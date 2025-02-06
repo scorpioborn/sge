@@ -22,7 +22,7 @@ import (
 )
 
 // registerWasmModules register CosmWasm keepers and non dependency inject modules.
-func (app *SgeApp) registerWasmModules(
+func (app *App) registerWasmModules(
 	appOpts servertypes.AppOptions,
 	wasmOpts ...wasmkeeper.Option,
 ) (porttypes.IBCModule, error) {
@@ -114,7 +114,7 @@ func (app *SgeApp) registerWasmModules(
 	return wasmStack, nil
 }
 
-func (app *SgeApp) setPostHandler() error {
+func (app *App) setPostHandler() error {
 	postHandler, err := posthandler.NewPostHandler(
 		posthandler.HandlerOptions{},
 	)
@@ -125,7 +125,7 @@ func (app *SgeApp) setPostHandler() error {
 	return nil
 }
 
-func (app *SgeApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) error {
+func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) error {
 	anteHandler, err := NewAnteHandler(
 		HandlerOptions{
 			HandlerOptions: ante.HandlerOptions{

@@ -43,9 +43,9 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	appOptions[flags.FlagHome] = app.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	bApp, err := app.NewSgeApp(logger, db, nil, true, appOptions, interBlockCacheOpt())
+	bApp, err := app.NewApp(logger, db, nil, true, appOptions, interBlockCacheOpt())
 	require.NoError(b, err)
-	require.Equal(b, app.AppName, bApp.Name())
+	require.Equal(b, app.Name, bApp.Name())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -100,9 +100,9 @@ func BenchmarkInvariants(b *testing.B) {
 	appOptions[flags.FlagHome] = app.DefaultNodeHome
 	appOptions[server.FlagInvCheckPeriod] = simcli.FlagPeriodValue
 
-	bApp, err := app.NewSgeApp(logger, db, nil, true, appOptions, interBlockCacheOpt())
+	bApp, err := app.NewApp(logger, db, nil, true, appOptions, interBlockCacheOpt())
 	require.NoError(b, err)
-	require.Equal(b, app.AppName, bApp.Name())
+	require.Equal(b, app.Name, bApp.Name())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(

@@ -2,6 +2,7 @@ package v10
 
 import (
 	"context"
+	"time"
 
 	sdkmath "cosmossdk.io/math"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
@@ -50,8 +51,11 @@ func CreateUpgradeHandler(
 		if err != nil {
 			return nil, err
 		}
-		govParams.ExpeditedMinDeposit = sdk.NewCoins(sdk.NewCoin(params.BaseCoinUnit, sdkmath.NewInt(5000000000)))
-		govParams.MinInitialDepositRatio = "0.250000000000000000"
+		govParams.ExpeditedMinDeposit = sdk.NewCoins(sdk.NewCoin(params.DefaultBondDenom, sdkmath.NewInt(50000000000)))
+		govParams.MinInitialDepositRatio = "0.000000000000000000"
+		govParams.ExpeditedThreshold = "0.750000000000000000"
+		expediteVotingPeriod := 86400 * time.Second
+		govParams.ExpeditedVotingPeriod = &expediteVotingPeriod
 		err = k.GovKeeper.Params.Set(ctx, govParams)
 		if err != nil {
 			return nil, err

@@ -11,6 +11,7 @@ import (
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/spf13/cast"
 
 	"github.com/sge-network/sge/app/params"
 )
@@ -37,7 +38,7 @@ const (
 	yearHours         = 8766 // 8766 is coming from 365.25×24h
 	YearSeconds       = 60 * 60 * yearHours
 	expectedBlockTime = 5 // in seconds
-	BlocksPerYear     = int64(YearSeconds / expectedBlockTime)
+	BlocksPerYear     = uint64(YearSeconds / expectedBlockTime)
 )
 
 var (
@@ -90,7 +91,7 @@ var (
 )
 
 // NewParams creates a new Params instance
-func NewParams(mintDenom string, blocksPerYear int64, excludeAmount sdkmath.Int, phases []Phase) Params {
+func NewParams(mintDenom string, blocksPerYear uint64, excludeAmount sdkmath.Int, phases []Phase) Params {
 	return Params{
 		MintDenom:     mintDenom,
 		BlocksPerYear: blocksPerYear,
@@ -195,7 +196,7 @@ func (p Params) getPhaseBlocks(phaseStep int) sdkmath.LegacyDec {
 	//    current block = 50
 	//    so the changing point of the phase is in block number 50.5 which is not applicable
 	//    the 0.5 provisions will be calculated in the BlockProvisions method of Minter
-	phaseBlocks := yearCoefficient.Mul(sdkmath.LegacyNewDec(p.BlocksPerYear)).TruncateDec()
+	phaseBlocks := yearCoefficient.Mul(sdkmath.LegacyMustNewDecFromStr(cast.ToString(p.BlocksPerYear))).TruncateDec()
 
 	return phaseBlocks
 }
@@ -226,7 +227,7 @@ func validateExcludeAmount(i interface{}) error {
 }
 
 func validateBlocksPerYear(i interface{}) error {
-	v, ok := i.(int64)
+	v, ok := i.(uint64)
 	if !ok {
 		return fmt.Errorf(ErrTextInvalidParamType, i)
 	}

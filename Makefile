@@ -192,6 +192,11 @@ clean:
 distclean: clean
 	rm -rf vendor/
 
+mocks: $(MOCKS_DIR)
+	@go install github.com/golang/mock/mockgen@v1.6.0
+	sh ./scripts/mockgen.sh
+.PHONY: mocks
+
 ###############################################################################
 ###                                  Proto                                  ###
 ###############################################################################

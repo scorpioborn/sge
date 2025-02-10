@@ -7,6 +7,7 @@ import (
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
+	sdkmath "cosmossdk.io/math"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -76,4 +77,39 @@ func (k Keeper) GetAuthority() string {
 func (k Keeper) Logger(ctx context.Context) log.Logger {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	return sdkCtx.Logger().With("module", "x/"+types.ModuleName)
+}
+
+// StakingTokenSupply implements an alias call to the underlying staking keeper's
+// to be used in BeginBlocker.
+func (k Keeper) StakingTokenSupply(ctx context.Context) (sdkmath.Int, error) {
+	return k.stakingKeeper.StakingTokenSupply(ctx)
+}
+
+// TokenSupply implements an alias call to the underlying bank keeper's
+// to be used in BeginBlocker.
+func (k Keeper) TokenSupply(ctx context.Context, denom string) sdkmath.Int {
+	return k.bankKeeper.GetSupply(ctx, denom).Amount
+}
+
+// BondedRatio implements an alias call to the underlying staking keeper's
+// to be used in BeginBlocker.
+func (k Keeper) BondedRatio(ctx context.Context) (sdkmath.LegacyDec, error) {
+	return k.stakingKeeper.BondedRatio(ctx)
+}
+
+// MintCoins implements an alias call to the underlying supply keeper's
+// to be used in BeginBlocker.
+func (k Keeper) MintCoins(ctx context.Context, newCoins sdk.Coins) error {
+	if newCoins.Empty() {
+		// skip as no coins need to be minted
+		return nil
+	}
+
+	return k.bankKeeper.MintCoins(ctx, types.ModuleName, newCoins)
+}
+
+// AddCollectedFees implements an alias call to the underlying supply keeper's
+// to be used in BeginBlocker.
+func (k Keeper) AddCollectedFees(ctx context.Context, fees sdk.Coins) error {
+	return k.bankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, k.feeCollectorName, fees)
 }

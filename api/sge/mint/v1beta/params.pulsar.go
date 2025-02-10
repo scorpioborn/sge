@@ -152,8 +152,8 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
-	if x.BlocksPerYear != int64(0) {
-		value := protoreflect.ValueOfInt64(x.BlocksPerYear)
+	if x.BlocksPerYear != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.BlocksPerYear)
 		if !f(fd_Params_blocks_per_year, value) {
 			return
 		}
@@ -188,7 +188,7 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 	case "sge.mint.v1beta.Params.mint_denom":
 		return x.MintDenom != ""
 	case "sge.mint.v1beta.Params.blocks_per_year":
-		return x.BlocksPerYear != int64(0)
+		return x.BlocksPerYear != uint64(0)
 	case "sge.mint.v1beta.Params.phases":
 		return len(x.Phases) != 0
 	case "sge.mint.v1beta.Params.exclude_amount":
@@ -212,7 +212,7 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 	case "sge.mint.v1beta.Params.mint_denom":
 		x.MintDenom = ""
 	case "sge.mint.v1beta.Params.blocks_per_year":
-		x.BlocksPerYear = int64(0)
+		x.BlocksPerYear = uint64(0)
 	case "sge.mint.v1beta.Params.phases":
 		x.Phases = nil
 	case "sge.mint.v1beta.Params.exclude_amount":
@@ -238,7 +238,7 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfString(value)
 	case "sge.mint.v1beta.Params.blocks_per_year":
 		value := x.BlocksPerYear
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfUint64(value)
 	case "sge.mint.v1beta.Params.phases":
 		if len(x.Phases) == 0 {
 			return protoreflect.ValueOfList(&_Params_3_list{})
@@ -271,7 +271,7 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 	case "sge.mint.v1beta.Params.mint_denom":
 		x.MintDenom = value.Interface().(string)
 	case "sge.mint.v1beta.Params.blocks_per_year":
-		x.BlocksPerYear = value.Int()
+		x.BlocksPerYear = value.Uint()
 	case "sge.mint.v1beta.Params.phases":
 		lv := value.List()
 		clv := lv.(*_Params_3_list)
@@ -326,7 +326,7 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "sge.mint.v1beta.Params.mint_denom":
 		return protoreflect.ValueOfString("")
 	case "sge.mint.v1beta.Params.blocks_per_year":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfUint64(uint64(0))
 	case "sge.mint.v1beta.Params.phases":
 		list := []*Phase{}
 		return protoreflect.ValueOfList(&_Params_3_list{list: &list})
@@ -577,7 +577,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.BlocksPerYear |= int64(b&0x7F) << shift
+					x.BlocksPerYear |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -705,7 +705,7 @@ type Params struct {
 	// mint_denom is the type of coin to mint.
 	MintDenom string `protobuf:"bytes,1,opt,name=mint_denom,json=mintDenom,proto3" json:"mint_denom,omitempty"`
 	// blocks_per_year is expected blocks per year.
-	BlocksPerYear int64 `protobuf:"varint,2,opt,name=blocks_per_year,json=blocksPerYear,proto3" json:"blocks_per_year,omitempty"`
+	BlocksPerYear uint64 `protobuf:"varint,2,opt,name=blocks_per_year,json=blocksPerYear,proto3" json:"blocks_per_year,omitempty"`
 	// phases contains phases of inflation.
 	Phases []*Phase `protobuf:"bytes,3,rep,name=phases,proto3" json:"phases,omitempty"`
 	// exclude_amount is the excluded amount form being calculated in inflation.
@@ -739,7 +739,7 @@ func (x *Params) GetMintDenom() string {
 	return ""
 }
 
-func (x *Params) GetBlocksPerYear() int64 {
+func (x *Params) GetBlocksPerYear() uint64 {
 	if x != nil {
 		return x.BlocksPerYear
 	}
@@ -773,7 +773,7 @@ var file_sge_mint_v1beta_params_proto_rawDesc = []byte{
 	0x0a, 0x6d, 0x69, 0x6e, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x09, 0x6d, 0x69, 0x6e, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x42, 0x0a, 0x0f,
 	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x5f, 0x70, 0x65, 0x72, 0x5f, 0x79, 0x65, 0x61, 0x72, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x03, 0x42, 0x1a, 0xf2, 0xde, 0x1f, 0x16, 0x79, 0x61, 0x6d, 0x6c, 0x3a,
+	0x02, 0x20, 0x01, 0x28, 0x04, 0x42, 0x1a, 0xf2, 0xde, 0x1f, 0x16, 0x79, 0x61, 0x6d, 0x6c, 0x3a,
 	0x22, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x5f, 0x70, 0x65, 0x72, 0x5f, 0x79, 0x65, 0x61, 0x72,
 	0x22, 0x52, 0x0d, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x50, 0x65, 0x72, 0x59, 0x65, 0x61, 0x72,
 	0x12, 0x45, 0x0a, 0x06, 0x70, 0x68, 0x61, 0x73, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b,

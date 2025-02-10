@@ -33,8 +33,8 @@ type AuthzKeeper interface {
 }
 
 func ValidateMsgAuthorization(
-	authzKeeper AuthzKeeper,
 	ctx context.Context,
+	authzKeeper AuthzKeeper,
 	creator, depositor string,
 	msg sdk.Msg,
 	errAuthorizationNotFound, errAuthorizationNotAccepted error,

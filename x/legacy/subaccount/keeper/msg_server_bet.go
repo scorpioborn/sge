@@ -30,7 +30,7 @@ func (k msgServer) Wager(goCtx context.Context, msg *types.MsgWager) (*types.Msg
 	}
 
 	payload := &types.SubAccWagerTicketPayload{}
-	err := k.Keeper.ovmKeeper.VerifyTicketUnmarshal(sdk.WrapSDKContext(ctx), msg.Ticket, &payload)
+	err := k.Keeper.ovmKeeper.VerifyTicketUnmarshal(ctx, msg.Ticket, &payload)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(types.ErrInTicketVerification, "%s", err)
 	}

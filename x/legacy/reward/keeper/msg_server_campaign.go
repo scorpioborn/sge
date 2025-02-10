@@ -33,7 +33,7 @@ func (k msgServer) CreateCampaign(goCtx context.Context, msg *types.MsgCreateCam
 	}
 
 	if msg.Creator != payload.Promoter {
-		if err := utils.ValidateMsgAuthorization(k.authzKeeper, ctx, msg.Creator, payload.Promoter, msg,
+		if err := utils.ValidateMsgAuthorization(ctx, k.authzKeeper, msg.Creator, payload.Promoter, msg,
 			types.ErrAuthorizationNotFound, types.ErrAuthorizationNotAccepted); err != nil {
 			return nil, err
 		}
@@ -132,7 +132,7 @@ func (k msgServer) UpdateCampaign(goCtx context.Context, msg *types.MsgUpdateCam
 
 	// Checks if the msg creator is the same as the current owner
 	if msg.Creator != campaign.Promoter {
-		if err := utils.ValidateMsgAuthorization(k.authzKeeper, ctx, msg.Creator, campaign.Promoter, msg,
+		if err := utils.ValidateMsgAuthorization(ctx, k.authzKeeper, msg.Creator, campaign.Promoter, msg,
 			types.ErrAuthorizationNotFound, types.ErrAuthorizationNotAccepted); err != nil {
 			return nil, err
 		}
@@ -186,7 +186,7 @@ func (k msgServer) WithdrawFunds(goCtx context.Context, msg *types.MsgWithdrawFu
 
 	// Checks if the msg creator is the same as the current owner
 	if msg.Creator != valFound.Promoter {
-		if err := utils.ValidateMsgAuthorization(k.authzKeeper, ctx, msg.Creator, valFound.Promoter, msg,
+		if err := utils.ValidateMsgAuthorization(ctx, k.authzKeeper, msg.Creator, valFound.Promoter, msg,
 			types.ErrAuthorizationNotFound, types.ErrAuthorizationNotAccepted); err != nil {
 			return nil, err
 		}

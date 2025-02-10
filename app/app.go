@@ -16,6 +16,7 @@ import (
 	_ "cosmossdk.io/x/feegrant/module" // import for side-effects
 	_ "cosmossdk.io/x/upgrade"         // import for side-effects
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	abci "github.com/cometbft/cometbft/abci/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -132,8 +133,8 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 	return govProposalHandlers
 }
 
-// AppConfig returns the default app config.
-func AppConfig() depinject.Config {
+// Config returns the default app config.
+func Config() depinject.Config {
 	return depinject.Configs(
 		appConfig,
 		// Alternatively, load the app config from a YAML file.
@@ -157,13 +158,15 @@ func NewApp(
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) (*App, error) {
+	overrideWasmVariables()
+
 	var (
 		app        = &App{AppKeepers: &keepers.AppKeepers{ScopedKeepers: make(map[string]capabilitykeeper.ScopedKeeper)}}
 		appBuilder *runtime.AppBuilder
 
 		// merge the AppConfig and other configuration in one config
 		appConfig = depinject.Configs(
-			AppConfig(),
+			Config(),
 			depinject.Supply(
 				appOpts, // supply app options
 				logger,  // supply logger
@@ -411,4 +414,12 @@ func (app *App) setupUpgradeHandlers() {
 			),
 		)
 	}
+}
+
+// overrideWasmVariables overrides the wasm variables to:
+//   - allow for larger wasm files
+func overrideWasmVariables() {
+	// Override Wasm size limitation from WASMD.
+	wasmtypes.MaxWasmSize = defaultMaxWasmSize
+	wasmtypes.MaxProposalWasmSize = wasmtypes.MaxWasmSize
 }

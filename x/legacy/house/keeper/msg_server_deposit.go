@@ -63,7 +63,7 @@ func (k Keeper) ParseDepositTicketAndValidate(
 		if !authzAllowed {
 			return "", types.ErrAuthorizationNotAllowed
 		}
-		if err := utils.ValidateMsgAuthorization(k.authzKeeper, ctx, msg.Creator, payload.DepositorAddress, msg,
+		if err := utils.ValidateMsgAuthorization(ctx, k.authzKeeper, msg.Creator, payload.DepositorAddress, msg,
 			types.ErrAuthorizationNotFound, types.ErrAuthorizationNotAccepted); err != nil {
 			return "", err
 		}

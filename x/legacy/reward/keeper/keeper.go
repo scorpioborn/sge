@@ -62,7 +62,7 @@ func NewKeeper(
 		modFunder: utils.NewModuleAccFunder(
 			expectedKeepers.BankKeeper,
 			expectedKeepers.AccountKeeper,
-			types.ErrorBank,
+			types.ErrBank,
 		),
 		accountKeeper:    expectedKeepers.AccountKeeper,
 		betKeeper:        betKeeper,

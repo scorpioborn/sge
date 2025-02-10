@@ -24,14 +24,11 @@ func CreateUpgradeHandler(
 		// https://github.com/cosmos/cosmos-sdk/pull/12363/files
 		// Set param key table for params module migration
 		for _, subspace := range k.ParamsKeeper.GetSubspaces() {
-			subspace := subspace
-
 			var keyTable paramstypes.KeyTable
 			switch subspace.Name() {
 			// sdk
 			case minttypes.ModuleName:
-				keyTable = minttypes.ParamKeyTable() //nolint:staticcheck
-
+				keyTable = minttypes.ParamKeyTable()
 			default:
 				continue
 			}

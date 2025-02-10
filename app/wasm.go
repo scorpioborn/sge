@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"path/filepath"
 
 	storetypes "cosmossdk.io/store/types"
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -35,6 +36,8 @@ func (app *App) registerWasmModules(
 
 	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasmtypes.ModuleName)
 
+	wasmDir := filepath.Join(DefaultNodeHome, "wasm")
+
 	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
 	if err != nil {
 		return nil, fmt.Errorf("error while reading wasm config: %s", err)
@@ -56,7 +59,7 @@ func (app *App) registerWasmModules(
 		app.TransferKeeper,
 		app.MsgServiceRouter(),
 		app.GRPCQueryRouter(),
-		DefaultNodeHome,
+		wasmDir,
 		wasmConfig,
 		wasmkeeper.BuiltInCapabilities(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),

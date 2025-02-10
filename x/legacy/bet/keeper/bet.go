@@ -180,7 +180,7 @@ func (k Keeper) PrepareBetObject(ctx sdk.Context, creator string, props *types.W
 	}
 
 	payload := &types.WagerTicketPayload{}
-	err := k.ovmKeeper.VerifyTicketUnmarshal(sdk.WrapSDKContext(ctx), props.Ticket, &payload)
+	err := k.ovmKeeper.VerifyTicketUnmarshal(ctx, props.Ticket, &payload)
 	if err != nil {
 		return nil, nil, sdkerrors.Wrapf(types.ErrInTicketVerification, "%s", err)
 	}

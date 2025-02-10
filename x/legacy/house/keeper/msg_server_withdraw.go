@@ -94,7 +94,7 @@ func (k Keeper) CalcAndWithdraw(
 	}
 
 	if isOnBehalf {
-		if err := utils.ValidateMsgAuthorization(k.authzKeeper, ctx, msg.Creator, depositorAddr, msg,
+		if err := utils.ValidateMsgAuthorization(ctx, k.authzKeeper, msg.Creator, depositorAddr, msg,
 			types.ErrAuthorizationNotFound, types.ErrAuthorizationNotAccepted); err != nil {
 			return 0, err
 		}

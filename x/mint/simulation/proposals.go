@@ -10,12 +10,14 @@ import (
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/sge-network/sge/x/mint/types"
+	"github.com/spf13/cast"
 )
 
 // Simulation operation weights constants
 const (
 	DefaultWeightMsgUpdateParams int = 100
 
+	//nolint:gosec
 	OpWeightMsgUpdateParams = "op_weight_msg_update_params"
 )
 
@@ -36,8 +38,8 @@ func SimulateMsgUpdateParams(r *rand.Rand, _ sdk.Context, _ []simtypes.Account) 
 	var authority sdk.AccAddress = address.Module("gov")
 
 	params := types.DefaultParams()
-	params.BlocksPerYear = uint64(simtypes.RandIntBetween(r, 1, 1000000))
-	params.ExcludeAmount = sdkmath.NewInt(int64(simtypes.RandIntBetween(r, 1, 100)))
+	params.BlocksPerYear = cast.ToUint64(simtypes.RandIntBetween(r, 1, 1000000))
+	params.ExcludeAmount = sdkmath.NewInt(cast.ToInt64(simtypes.RandIntBetween(r, 1, 100)))
 	params.MintDenom = simtypes.RandStringOfLength(r, 10)
 
 	return &types.MsgUpdateParams{

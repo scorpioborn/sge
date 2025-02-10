@@ -58,7 +58,10 @@ func BeginBlocker(ctx context.Context, k keeper.Keeper) error {
 		)
 
 		// store minter
-		k.Minter.Set(ctx, minter)
+		err = k.Minter.Set(ctx, minter)
+		if err != nil {
+			return err
+		}
 	}
 
 	// if the inflation rate is zero, means that we have no minting, so the rest of the code should not be called
@@ -77,7 +80,10 @@ func BeginBlocker(ctx context.Context, k keeper.Keeper) error {
 
 	// set truncated value in this block to be added to provision calculation in the next block
 	minter.TruncatedTokens = truncatedTokens
-	k.Minter.Set(ctx, minter)
+	err = k.Minter.Set(ctx, minter)
+	if err != nil {
+		return err
+	}
 
 	// send the minted coins to the fee collector account
 	err = k.AddCollectedFees(ctx, mintedCoins)

@@ -138,7 +138,7 @@ sged start
 
 | Version | Mainnet | Testnet | SDK Version |
 |:-------:|:-------:|:-------:|:-----------:|
-|  v1.7.0 |    ✓    |    ✓    |   v0.47.10  |
+|  v1.8.0 |    ✓    |    ✓    |   v0.50.11+ |
 
 ## Active Networks
 

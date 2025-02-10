@@ -12,6 +12,7 @@ import (
 	_ "cosmossdk.io/x/nft/module" // import for side-effects
 	_ "cosmossdk.io/x/upgrade"    // import for side-effects
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
+
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/auth/tx/config" // import for side-effects
 	_ "github.com/cosmos/cosmos-sdk/x/auth/vesting"   // import for side-effects
@@ -34,6 +35,7 @@ import (
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	_ "github.com/cosmos/cosmos-sdk/x/staking" // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
@@ -43,10 +45,11 @@ import (
 	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
 	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-	_ "github.com/sge-network/sge/x/mint" // import for side-effects
-	mintkeeper "github.com/sge-network/sge/x/mint/keeper"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+
+	_ "github.com/sge-network/sge/x/mint" // import for side-effects
+	mintkeeper "github.com/sge-network/sge/x/mint/keeper"
 )
 
 type AppKeepers struct {

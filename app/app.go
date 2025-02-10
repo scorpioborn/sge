@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+
 	_ "cosmossdk.io/api/cosmos/tx/config/v1" // import for side-effects
 	clienthelpers "cosmossdk.io/client/v2/helpers"
 	"cosmossdk.io/depinject"
@@ -14,9 +16,10 @@ import (
 	_ "cosmossdk.io/x/circuit"         // import for side-effects
 	_ "cosmossdk.io/x/evidence"        // import for side-effects
 	_ "cosmossdk.io/x/feegrant/module" // import for side-effects
+	_ "cosmossdk.io/x/nft/module"      // import for side-effects
 	_ "cosmossdk.io/x/upgrade"         // import for side-effects
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -46,23 +49,25 @@ import (
 	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	_ "github.com/cosmos/cosmos-sdk/x/group/module" // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/mint"         // import for side-effects
 	_ "github.com/cosmos/cosmos-sdk/x/params"       // import for side-effects
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	_ "github.com/cosmos/cosmos-sdk/x/slashing"     // import for side-effects
-	_ "github.com/cosmos/cosmos-sdk/x/staking"      // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/slashing" // import for side-effects
+	_ "github.com/cosmos/cosmos-sdk/x/staking"  // import for side-effects
+
 	_ "github.com/cosmos/ibc-go/modules/capability" // import for side-effects
 	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts" // import for side-effects
 	_ "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"                 // import for side-effects
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
 	"github.com/sge-network/sge/app/keepers"
 	"github.com/sge-network/sge/app/upgrades"
 	v10 "github.com/sge-network/sge/app/upgrades/v10"
 	"github.com/sge-network/sge/docs"
-	_ "github.com/sge-network/sge/x/mint" // import for side-effects
-
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 )
 
 const (
